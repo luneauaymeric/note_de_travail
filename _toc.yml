@@ -1,0 +1,9 @@
+# Table of contents
+# Learn more at https://jupyterbook.org/customize/toc.html
+
+format: jb-article
+root: intro
+sections:
+- file: read_sm
+- file: regroupement_categorie
+- file: analyse_preleminaire
