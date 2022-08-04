@@ -9,6 +9,8 @@ import glob
 from matplotlib import pyplot as plt
 import numpy as np
 import plotly.express as px
+import seaborn as sns 
+from matplotlib.colors import LogNorm, Normalize
 #import bamboolib
 
 
@@ -79,7 +81,7 @@ df0['Year'] = df0['date'].dt.year
 df=df0.merge(users,on=['user_id'], how = "inner")#how = inner by default
 
 
-# In[10]:
+# In[9]:
 
 
 def time_series(time_length, x, what):
@@ -114,7 +116,7 @@ def time_series(time_length, x, what):
 # L'analyse de la distribution des rôles montre la présence croissante des professionnels, en particulier des oncologues (*oncologists*) et, dans une moindre, des chercheurs. Alors que les oncologues représentent un peu moins de 5% des comptes en 2012, ils constituent environ 27% des comptes en 2020. La part des professionnel de santé (*health professional*) semble quant à elle relativement stable dans le temps. La proportion de comptes jouant les rôles de patients, c'est-à-dire les *survivors* et les *cancer patient*, ne dépasse pas les 10% sur toutes la périodes. On observe également une faible représentation des "défenseurs de causes" (*advocacy*). Rappelons toutefois que cette catégorie comprend les comptes qui ne jouent pas d'autres rôles. Par exemple, un "survivant" qui a été annoté également comme un défenseur de cause (*advocacy*) sera compté parmi les patients et non les *advocacy*.
 # 
 
-# In[35]:
+# In[10]:
 
 
 time_length = "Year"
@@ -141,7 +143,7 @@ area_time_serie
 # ```
 # ````
 
-# In[36]:
+# In[11]:
 
 
 time_length = "Year"
@@ -159,7 +161,7 @@ area_time_serie = px.area(dftime, x=time_length, y='prop', color= x, pattern_sha
 area_time_serie
 
 
-# In[37]:
+# In[12]:
 
 
 dftime = time_series(time_length, x, 'id')
@@ -168,13 +170,13 @@ area_time_serie = px.area(dftime, x=time_length, y='prop', color= x, pattern_sha
 area_time_serie
 
 
-# In[135]:
+# In[13]:
 
 
 sns.lineplot(x = 'Year', y = "prop", data = dftime, hue = x)
 
 
-# In[163]:
+# In[14]:
 
 
 import seaborn as sns
@@ -188,7 +190,7 @@ g.fig.subplots_adjust(top=0.9) # adjust the Figure in rp
 g.fig.suptitle('Proportion de tweets par statuts et par an')
 
 
-# In[144]:
+# In[15]:
 
 
 biom=['ROS1', 'ALK','EXON', 'EGFR','KRAS','NTRK','BRAF',"MET",'RET',"HER2"]#
@@ -216,7 +218,7 @@ for i,bio in enumerate(biom):
 # 
 # Les diagrammes ci-dessous donnent la proportion de tweets contenant chacun des biomarqueurs par an et par mois respectivement, sachant qu'un tweet peut contenir plusieurs biomarqueurs. Ainsi, en 2018, le biomarqueur ALK était présent dans près 1,5% des tweets. Puis en janvier 2021, le biomarqueur EGFR était présent dans 3% des tweets.
 
-# In[148]:
+# In[16]:
 
 
 fig = px.line(biomm, x="Year", y="prop_of_biom", color='biomarker',
@@ -227,7 +229,7 @@ fig.write_html("biomarkers_time.html")
 fig
 
 
-# In[160]:
+# In[17]:
 
 
 
@@ -239,7 +241,7 @@ g.fig.subplots_adjust(top=0.9) # adjust the Figure in rp
 g.fig.suptitle('Proportion de tweets par an contenant chacun des biomarqueurs')
 
 
-# In[28]:
+# In[18]:
 
 
 dfc=df.copy()
@@ -247,7 +249,7 @@ dfc.index=df['date']#.resample
 dfc=dfc[dfc.date>'01-01-2012']
 
 
-# In[164]:
+# In[19]:
 
 
 
@@ -281,14 +283,14 @@ fig.show()
 # 
 # Enfin, la matrice ci-après indique la part occupée par les différents biomarqueurs dans les tweets qui en mentionnent au moins un en fonction du statut de leurs auteurs. Par exemple, 30% des 2548 biomarqueurs cités par les "défenseurs de cause" (*advocacy*) concernent le marqueur EGFR. 
 
-# In[165]:
+# In[20]:
 
 
 df_status = df[["User_status", "id", 'ROS1', 'ALK', 'EXON', 'EGFR', 'KRAS', 'NTRK', 'BRAF', 'MET', 'RET', 'HER2']]
 df_tmp = df_status.loc[df_status["ALK"]==1].groupby(["User_status", "ALK"]).agg(ALK_c = ("id", "count"))
 
 
-# In[166]:
+# In[21]:
 
 
 biom = ['ROS1', 'ALK', 'EXON', 'EGFR', 'KRAS', 'NTRK', 'BRAF', 'MET', 'RET', 'HER2']
@@ -320,7 +322,13 @@ pivot_table.index = pivot_table[variable]
 pivot_table = pivot_table.drop(columns = [variable])
 
 
-# In[167]:
+# In[33]:
+
+
+
+
+
+# In[22]:
 
 
 biom = ['ROS1', 'ALK', 'EXON', 'EGFR', 'KRAS', 'NTRK', 'BRAF', 'MET', 'RET', 'HER2']
@@ -359,18 +367,17 @@ pivot_table1_style = pivot_table1.style.format(precision=0, na_rep='').set_capti
 pivot_table1_style
 
 
-# In[168]:
+# In[23]:
 
 
 fig = px.imshow(pivot_table,color_continuous_scale='reds', title = "Proportion des références aux différents biomarqueurs en fonction du statut des auteurs")
 fig.show()
 
 
-# In[179]:
+# In[24]:
 
 
-import seaborn as sns 
-from matplotlib.colors import LogNorm, Normalize
+
 
 fig = plt.figure(num=None, figsize=(20, 10), dpi=80, facecolor='w', edgecolor='k')
 
@@ -382,8 +389,50 @@ for t in res.texts: t.set_text(t.get_text() + " %")
 res.set(title ="Proportion des références aux différents biomarqueurs en fonction du statut des auteurs")
 
 
-# In[ ]:
+# In[25]:
 
 
+biom = ['ROS1', 'ALK', 'EXON', 'EGFR', 'KRAS', 'NTRK', 'BRAF', 'MET', 'RET', 'HER2']
+variable = "User_status"
+df_status = df[[variable, "id", 'ROS1', 'ALK', 'EXON', 'EGFR', 'KRAS', 'NTRK', 'BRAF', 'MET', 'RET', 'HER2']]
 
+
+for i, bio in enumerate(biom):
+    df_tmp = df_status.loc[df_status[bio]==1].groupby([variable, bio]).agg(bio = ("id", "count")).reset_index()
+    df_tmp = df_tmp[[variable,"bio"]].rename(columns = {"bio": bio})
+    
+    if i==0:
+        pivot_table = df_tmp
+    else:
+        pivot_table = pivot_table.merge(df_tmp, how = "left", on = [variable]) 
+
+pivot_table["somme_ligne"] = pivot_table[biom].sum(axis=1)
+pivot_table.loc['Column_Total']= pivot_table.sum(numeric_only=True, axis=0)
+pivot_table = pivot_table.fillna("Total")
+
+df_tmp = pivot_table.copy()
+
+df_tmp.index = df_tmp[variable]
+df_tmp = df_tmp.drop(columns = [variable])
+
+pivot_table = pd.DataFrame.transpose(df_tmp).reset_index()
+pivot_table
+df_tmp = pivot_table.copy()
+
+for i, status in enumerate(pivot_table["index"]):
+    for i, bio in enumerate(pivot_table.columns[1:]):
+        df_tmp[bio] = pivot_table[bio]/pivot_table["Total"]*100
+
+pivot_table = df_tmp.drop(columns = ["Total"])
+pivot_table.index = pivot_table["index"]
+pivot_table = pivot_table.drop(columns = ["index"])
+
+pivot_table
+
+
+# In[26]:
+
+
+fig = px.imshow(pivot_table,color_continuous_scale='reds', title = "Proportion des références aux différents biomarqueurs en fonction du statut des auteurs")
+fig.show()
 
