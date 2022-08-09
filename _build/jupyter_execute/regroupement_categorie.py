@@ -120,8 +120,9 @@ for r in roles:
 # 
 # Le travail d'annotation repose sur quinze variables qui sont : *collective*, *male*, *female*, *advocacy*, *cancer patient*, *corpus*, *health center*, *health professional*, *industry*,  *media*, *npo*, *oncologist*, *other*, *research* et *survivor*. Nous les avons regroupés en trois classes correspondant au type d'entité, au genre et au rôle.
 # 
+# ## Type d'entité
 # 
-# - Par *type d'entité*, on distingue les utlisatrices et utilisateurs qui agissent en leur "nom propre" de celles et ceux qui twittent au nom d'une organisation. Cette information est donnée par la variable *collective*.
+# Par *type d'entité*, on distingue les utlisatrices et utilisateurs qui agissent en leur "nom propre" de celles et ceux qui twittent au nom d'une organisation. Cette information est donnée par la variable *collective*.
 # 
 
 # In[10]:
@@ -157,7 +158,9 @@ tu_entity_style = tu_entity.style.format(precision=0, na_rep='')
 tu_entity_style
 
 
-# - Le genre est donné par la variable *Gender*. Le genre Certains comptes ont été annotés à la fois comme "homme" et "femme", ou que leur genre n'a pu être déterminé. On a trois modalités : *Male*, *Female*, *Asexual* pour les comptes dont le genre n'a pu être déterminé.  On retiendra par ailleurs que les catégories de genre ne sont appliquées qu'aux "personnes".
+# ## Le genre
+# 
+# Le genre est donné par la variable *Gender*. Le genre Certains comptes ont été annotés à la fois comme "homme" et "femme", ou que leur genre n'a pu être déterminé. On a trois modalités : *Male*, *Female*, *Asexual* pour les comptes dont le genre n'a pu être déterminé.  On retiendra par ailleurs que les catégories de genre ne sont appliquées qu'aux "personnes".
 # 
 # 
 
@@ -221,14 +224,15 @@ fig.suptitle('Nombre de comptes et de tweets par catégorie de genre')
 #sns.barplot(x = "Gender", y="account_frequency", data = tu_gender)
 
 
-# - Le "rôle" vise à déterminer si les utilisatrices et utilisateurs s'expriment en tant que patients, oncologues, professionnels de santé, etc. Les variables considérées comme des "rôles" sont les onze suivantes : *advocacy*, *cancer patient*, *health center*, *health professional*, *industry*, *media*, *npo*, *oncologist*, *other*, *research*, *survivor*. À la différence du type d'entité ou du genre, un compte peut  être classé dans plusieurs rôles. Par exemple, il peut être à la fois un "oncologue" et un "patient" ou un "média" et une "organisation à but non-lucratif" (*non-profit organisation*). Compte tenu des multiples imbrications, le regroupement des différents rôles au sein d'une même variable a dès lors impliqué plusieurs opérations de recodage 
-# 
-# 
 # ## Regroupement des rôles
+# 
+# Le "rôle" vise à déterminer si les utilisatrices et utilisateurs s'expriment en tant que patients, oncologues, professionnels de santé, etc. Les variables considérées comme des "rôles" sont les onze suivantes : *advocacy*, *cancer patient*, *health center*, *health professional*, *industry*, *media*, *npo*, *oncologist*, *other*, *research*, *survivor*. À la différence du type d'entité ou du genre, un compte peut  être classé dans plusieurs rôles. Par exemple, il peut être à la fois un "oncologue" et un "patient" ou un "média" et une "organisation à but non-lucratif" (*non-profit organisation*). Compte tenu des multiples imbrications, le regroupement des différents rôles au sein d'une même variable a dès lors impliqué plusieurs opérations de recodage 
 # 
 # Le travail de recodage a alors été divisé en plusieurs étapes afin de construire de nouvelles variables permettant d'attribuer chaque compte à une catégorie unique tout en conservant les rôles définis lors de l'annotation. Ces rôles sont directement liés à la question qui nous intéresse qui est de comprendre les rapports qu'entretiennent les patients avec les professionnels de santé et l'influence qu'ils peuvent avoir sur l'évolution des pratiques médicales, des traitements ou de la recherche. Partant de cette question, l'objectif est de construire des variables qui permettent de distinguer les patients des professionnels de santé, les patients engagés dans la défense d'une cause de ceux qui ne le sont pas ou encore les oncologues des autres professions de santé et des chercheurs non-oncologues.
 # 
-# - Etape 1 : on a créé une première variable, appelée *User_role*, qui regroupe toutes les combinaisons de rôle observées à partir de matrices de co-occurrence. Sur la {numref}`figure %s <role-matrice>`, on voit par exemple qu'on a 569 comptes classés uniques comme *advocacy* et 115 qui sont considérés à la fois comme *advocacy* et *cancer patient*.
+# ### Etape 1
+# 
+# On a créé une première variable, appelée *User_role*, qui regroupe toutes les combinaisons de rôle observées à partir de matrices de co-occurrence. Sur la {numref}`figure %s <role-matrice>`, on voit par exemple qu'on a 569 comptes classés uniques comme *advocacy* et 115 qui sont considérés à la fois comme *advocacy* et *cancer patient*.
 # 
 # 
 # ```{figure} images/all_categories_plot.png
@@ -611,8 +615,9 @@ tu_role_style
 #role_tree.to_csv(f"{path_base}list_role.csv", sep = ",")
 
 
+# ### Etape 2
 # 
-# -  Etape 2 : les modalités de la variable *User_role* sont regroupées à l'aide d'une nouvelle variable appelée *User_role2*. Il s'agit ici d'opérer une première réduction des rôles. J'ai fait par exemple le choix de regrouper toutes les modalités contenant le terme "survivor" dans une méta-catégorie appelée *Survivor* (avec S majuscule). De même toutes les modalités contenant le terme "cancer patient" dans la méta-catégorie *Cancer patient*, sauf celles contenant aussi le terme "survivor". 
+# Les modalités de la variable *User_role* sont regroupées à l'aide d'une nouvelle variable appelée *User_role2*. Il s'agit ici d'opérer une première réduction des rôles. J'ai fait par exemple le choix de regrouper toutes les modalités contenant le terme "survivor" dans une méta-catégorie appelée *Survivor* (avec S majuscule). De même toutes les modalités contenant le terme "cancer patient" dans la méta-catégorie *Cancer patient*, sauf celles contenant aussi le terme "survivor". 
 # 
 
 # In[21]:
@@ -757,7 +762,9 @@ tu_role_style
 #role_tree.to_csv(f"{path_base}list_role.csv", sep = ",")
 
 
-# - Etape 3 : partant de la variable *User_role2*, on en a créé une nouvelle intitulée "User_role3" qui distingue pour chacun des rôles les comptes engagés dans la défence d'une cause et ceux qui ne le sont pas. On a ainsi les modalités *Cance patient* et *Advocacy cancer patient*.
+# ### Etape 3
+# 
+# Partant de la variable *User_role2*, on en a créé une nouvelle intitulée "User_role3" qui distingue pour chacun des rôles les comptes engagés dans la défence d'une cause et ceux qui ne le sont pas. On a ainsi les modalités *Cance patient* et *Advocacy cancer patient*.
 
 # In[24]:
 
@@ -803,7 +810,9 @@ tu_role_style
 #role_tree.to_csv(f"{path_base}list_role.csv", sep = ",")
 
 
-# - Etape 4 : Les modalités constituant la variable *User_role3* sont regroupées au sein de méta-catégories reprenant les rôles définis initialement. Nous proposons trois types de regroupements.
+# ### Etape 4
+# 
+# Les modalités constituant la variable *User_role3* sont regroupées au sein de méta-catégories reprenant les rôles définis initialement. Nous proposons trois types de regroupements.
 # 
 # 
 # Dans le premier regroupement, qui correspond à la variable *User_status*, la modalité *Advocacy* rassemble tous les comptes considérés comme jouant un rôle d'advocacy, sauf si ce sont des professionnels de santé ou des patients. Dans le cas des professionnels de santé, ceux qui joue un rôle d'advocacy sont placés avec les *Health professional*. Dans le cas des patients, on a distingué les patients qui font un travail de plaidoyer des autres patients. Par ailleurs, qu'il s'agisse des *Patients* ou des *Advocacy patients*, ces deux modalités réunissent en leur sein les *survivors* et les *cancer patients*.

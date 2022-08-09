@@ -54,7 +54,7 @@ for name in glob.glob(f'{path_base}/sm/*.csv'):
         df=df0
 
 
-# In[13]:
+# In[ ]:
 
 
 df0=df.drop_duplicates()
