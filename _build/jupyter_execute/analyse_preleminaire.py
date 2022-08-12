@@ -604,6 +604,7 @@ g.fig.suptitle('Evolution du nombre de tweets par statuts et par an (base 100 en
 
 
 biom=['ROS1', 'ALK','EXON', 'EGFR','KRAS','NTRK','BRAF',"MET",'RET',"HER2"]#
+
 for i,bio in enumerate(biom):
     
     df_tmp = df.loc[(df[bio] == 1)& (df["Year"] >= 2012)]
@@ -733,7 +734,7 @@ def create_layout_button(k, customer):
 
 
 fig4.update_layout(
-    title= f'Evolution du nombre de comptes et de tweets par role',
+    title= f'Evolution du nombre de comptes et de tweets contenant chacun des biomarqueurs par an',
     updatemenus=[
         go.layout.Updatemenu(
             active = 0,
@@ -769,53 +770,172 @@ g.fig.suptitle('Proportion de tweets par an contenant chacun des biomarqueurs')
 # In[22]:
 
 
-dfc=df.copy()
-dfc.index=df['date']#.resample
-dfc=dfc[dfc.date>'01-01-2012']
+biom=['ROS1', 'ALK','EXON', 'EGFR','KRAS','NTRK','BRAF',"MET",'RET',"HER2"]#
+df['month_year'] = df['date'].dt.to_period('M')
+
+for i,bio in enumerate(biom):
+    
+    df_tmp = df.loc[(df[bio] == 1)& (df["Year"] >= 2012)]
+    #print(i, bio, len(df_tmp))
+    df_tmp = df_tmp.groupby(['month_year', bio]).agg(nb_tweet_on_biomarker = ("id", "count")).reset_index()
+    dfdate = df.groupby(['month_year']).agg(nb_tweet = ("id", "count")).reset_index()
+    df_tmp = df_tmp.merge(dfdate, on = ['month_year'], how = "left")
+    df_tmp["biomarker"] = bio
+    df_tmp = df_tmp.drop(columns = [bio])
+    df_tmp["prop_of_biom"] = df_tmp["nb_tweet_on_biomarker"]/df_tmp["nb_tweet"]*100
+    
+    #sns.lineplot( x = 'Year', y = "prop_of_biom", data = df_tmp)
+    
+    if i==0:
+        biomm=df_tmp
+    else:
+        biomm=pd.concat([biomm,df_tmp])
 
 
 # In[23]:
 
 
+time_length = "month_year"
+x = "biomarker"
+year_base = "2018-06"
+
+datatime = biomm.copy()
+#datatime[time_length] = datatime.index
+list_year = []
+list_role = []
+list_base_100_tweet = []
+list_base_100_user = []
+
+for n in datatime[x].unique():
+    datatemp = datatime.loc[datatime[x] == n]
+    #first_year = np.min(datatemp.index)
+
+    datatemp = datatemp.loc[datatemp[time_length] == year_base]
+    datatemp = datatemp.drop_duplicates()
+
+    ref_value_tweet = datatemp["nb_tweet_on_biomarker"].unique()[0]
+    list_role.append(n)
+    list_base_100_tweet.append(ref_value_tweet)
+    
+    data = {x : list_role, "ref_value_tweet" : list_base_100_tweet}
+    data_base = pd.DataFrame(data)
+    datatime = datatime.drop_duplicates()
+    datatemp = datatime.merge(data_base, on = [x], how = "left")
+    datatemp["base_100_tweets"] = (datatemp["nb_tweet_on_biomarker"]/datatemp["ref_value_tweet"])*100
+    datatemp
 
 
-tr='1m'
-total=dfc.resample(tr)['id'].count()
+datatemp['tx_var_tweets'] = (datatemp.groupby([x]).nb_tweet_on_biomarker.pct_change())*100
 
-for i,bio in enumerate(biom):
-    collective_permonth=(dfc[dfc[bio]==1].resample(tr)['id'].count()/total*100).reset_index()
-    collective_permonth['category']=bio
 
-    if i==0:
-        biomm=collective_permonth
+# In[24]:
+
+
+datatemp["month"] = datatemp["month_year"].dt.strftime('%Y-%m')
+time_length = "month"
+
+list_of_compute = ['nb_tweet_on_biomarker', 'prop_of_biom', #'average_publication',
+       'base_100_tweets', 
+                   'tx_var_tweets']
+
+
+fig5 = make_subplots(rows=1, cols=1,
+                    shared_xaxes=True,
+                    vertical_spacing=0.02)
+
+#for j, v in enumerate(variable):
+df1 = datatemp
+for z, col in enumerate(list_of_compute):
+    for i, n in enumerate(df1[x].unique()):
+        if col == "prop_of_biom" or col == "nb_tweet_on_biomarker":
+            fig5.append_trace(
+                go.Scatter(
+                    x= df1[time_length].loc[(df1[x]==n)],
+                    y= df1[col].loc[(df1[x]== n)],
+                    stackgroup='one',
+                    name = n,
+                meta=  [col]),
+                1,1)
+        else :
+            fig5.append_trace(
+            go.Scatter(
+                x= df1[time_length].loc[(df1[x]==n)],
+                y= df1[col].loc[(df1[x]== n)],
+                name = n,
+                meta= [col]),
+            1,1)
+
+#
+Ld=len(fig5.data)
+Lc =len(list_of_compute)
+
+
+
+#print(fig)
+for k in range(0, Ld):
+    #print(fig.data[k].meta[0])
+    #print(role_variable)
+
+    if "nb_tweet_on_biomarker" in fig5.data[k].meta[0]:
+        fig5.update_traces(visible=True, selector = k)
     else:
-        biomm=pd.concat([biomm,collective_permonth])
-
-
-import plotly.express as px
-fig = px.area(biomm, x="date", y="id",color='category',pattern_shape="category", 
-              pattern_shape_sequence=[".", "x", "+"],
-             title="Proportion de tweets contenant chacun des biomarqueurs par mois")#, line_group="country")
-#fig.layout.yaxis.tickformat = ',.0%'
-fig.write_html("biomarkers_time.html")
+        fig5.update_traces(visible=False, selector = k)
 
 
 
-fig.show()
+def create_layout_button(k, customer):
+    list_to_display = []
+
+    for i, trace in enumerate(fig5.data):
+        #print(fig.data[i].meta[1])
+        if customer in fig5.data[i].meta[0] :
+            list_to_display.append(True)
+        else:
+            list_to_display.append(False)
+    return dict(label = customer,
+                method = 'update',
+                args = [{'visible': list_to_display,
+                         'title': customer,
+                         'showlegend': True,
+                        }])
+
+
+
+
+fig5.update_layout(
+    title= f'Evolution du nombre de comptes et de tweets contenant chacun des biomarqueurs par mois',
+    updatemenus=[
+        go.layout.Updatemenu(
+            active = 0,
+            buttons = [create_layout_button(k, customer) for k, customer in enumerate(list_of_compute)],
+            x= 1.2,
+            y= 1.2
+        ),
+
+    ]
+)
+
+
+#print(fig.layout.updatemenus)
+
+
+
+
+fig5.show()
 
 
 # ## Qui parle de quel marqueur ?
 # 
 # Enfin, la matrice ci-après indique la part occupée par les différents biomarqueurs dans les tweets qui en mentionnent au moins un en fonction du statut de leurs auteurs. Par exemple, 30% des 2548 biomarqueurs cités par les "défenseurs de cause" (*advocacy*) concernent le marqueur EGFR. 
 
-# In[24]:
+# In[25]:
 
 
 df_status = df[["User_status", "id", 'ROS1', 'ALK', 'EXON', 'EGFR', 'KRAS', 'NTRK', 'BRAF', 'MET', 'RET', 'HER2']]
 df_tmp = df_status.loc[df_status["ALK"]==1].groupby(["User_status", "ALK"]).agg(ALK_c = ("id", "count"))
 
 
-# In[25]:
+# In[26]:
 
 
 biom = ['ROS1', 'ALK', 'EXON', 'EGFR', 'KRAS', 'NTRK', 'BRAF', 'MET', 'RET', 'HER2']
@@ -847,7 +967,7 @@ pivot_table.index = pivot_table[variable]
 pivot_table = pivot_table.drop(columns = [variable])
 
 
-# In[26]:
+# In[27]:
 
 
 biom = ['ROS1', 'ALK', 'EXON', 'EGFR', 'KRAS', 'NTRK', 'BRAF', 'MET', 'RET', 'HER2']
@@ -886,14 +1006,14 @@ pivot_table1_style = pivot_table1.style.format(precision=0, na_rep='').set_capti
 pivot_table1_style
 
 
-# In[27]:
+# In[28]:
 
 
 fig = px.imshow(pivot_table,color_continuous_scale='reds', title = "Proportion des références aux différents biomarqueurs en fonction du statut des auteurs")
 fig.show()
 
 
-# In[28]:
+# In[29]:
 
 
 
@@ -908,7 +1028,7 @@ for t in res.texts: t.set_text(t.get_text() + " %")
 res.set(title ="Proportion des références aux différents biomarqueurs en fonction du statut des auteurs")
 
 
-# In[29]:
+# In[30]:
 
 
 biom = ['ROS1', 'ALK', 'EXON', 'EGFR', 'KRAS', 'NTRK', 'BRAF', 'MET', 'RET', 'HER2']
@@ -949,14 +1069,14 @@ pivot_table = pivot_table.drop(columns = ["index"])
 pivot_table
 
 
-# In[30]:
+# In[31]:
 
 
 fig = px.imshow(pivot_table,color_continuous_scale='reds', title = "Proportion des références aux différents biomarqueurs en fonction du statut des auteurs")
 fig.show()
 
 
-# In[31]:
+# In[32]:
 
 
 
