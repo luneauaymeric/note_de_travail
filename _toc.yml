@@ -7,3 +7,4 @@ chapters:
 - file: read_sm
 - file: regroupement_categorie
 - file: analyse_preleminaire
+- file: desaisonnalisation
