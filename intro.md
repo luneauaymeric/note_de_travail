@@ -1,6 +1,5 @@
 # Notes de travail
 
 
-
 ```{tableofcontents}
 ```
