@@ -1,4 +1,15 @@
 Traceback (most recent call last):
+  File "/home/aymeric/anaconda3/envs/analyse_tweets/lib/python3.9/site-packages/nbclient/client.py", line 626, in _async_poll_for_reply
+    msg = await ensure_async(self.kc.shell_channel.get_msg(timeout=new_timeout))
+  File "/home/aymeric/anaconda3/envs/analyse_tweets/lib/python3.9/site-packages/nbclient/util.py", line 96, in ensure_async
+    result = await obj
+  File "/home/aymeric/anaconda3/envs/analyse_tweets/lib/python3.9/site-packages/jupyter_client/channels.py", line 230, in get_msg
+    raise Empty
+_queue.Empty
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
   File "/home/aymeric/anaconda3/envs/analyse_tweets/lib/python3.9/site-packages/jupyter_cache/executors/utils.py", line 51, in single_nb_execution
     executenb(
   File "/home/aymeric/anaconda3/envs/analyse_tweets/lib/python3.9/site-packages/nbclient/client.py", line 1093, in execute
@@ -11,69 +22,16 @@ Traceback (most recent call last):
     return future.result()
   File "/home/aymeric/anaconda3/envs/analyse_tweets/lib/python3.9/site-packages/nbclient/client.py", line 559, in async_execute
     await self.async_execute_cell(
-  File "/home/aymeric/anaconda3/envs/analyse_tweets/lib/python3.9/site-packages/nbclient/client.py", line 854, in async_execute_cell
-    self._check_raise_for_error(cell, exec_reply)
-  File "/home/aymeric/anaconda3/envs/analyse_tweets/lib/python3.9/site-packages/nbclient/client.py", line 756, in _check_raise_for_error
-    raise CellExecutionError.from_cell_and_msg(cell, exec_reply_content)
-nbclient.exceptions.CellExecutionError: An error occurred while executing the following cell:
-------------------
-year = widgets.IntSlider(
-    value= 2016,
-    min=2011,
-    max=2021,
-    step=1.0,
-    description='Année de référence (fonctionne uniquement pour les évolutions en base 100):',
-    continuous_update=False
-)
-
-
-container = widgets.HBox(children=[year])
-
-feature = widgets.Dropdown(
-    description="Choix de la variable recodée : ",
-    value='User_status',
-    options=variable
-)
-
-computation = widgets.Dropdown(
-    options= list_of_compute,
-    value='nb_tweets_by_group',
-    description='Computation',
-)
-
-
-traces = []
-# Assign an empty figure widget with two traces
-
-for i, n in enumerate(df1[x].unique()):
-    traces.append(
-        go.Scatter(
-            x= df1["Year"].loc[(df1[x]==n)],
-            y= df1["nb_tweets_by_group"].loc[(df1[x]== n)],
-            name = n)
-    )
-            
-#trace1 = go.Scatter(x=df[time_length], y = df["nb_tweets_by_group"], opacity=0.75, name='Arrival Delays')
-g = go.FigureWidget(data= traces,
-                    layout=go.Layout(
-                        title=dict(
-                            text='Evolution du nombe de compte et de tweets par roles'
-                        )
-                       
-                    ))
-
-
-------------------
-
-[0;31m---------------------------------------------------------------------------[0m
-[0;31mNameError[0m                                 Traceback (most recent call last)
-[0;32m/tmp/ipykernel_15230/355180715.py[0m in [0;36m<module>[0;34m[0m
-[0;32m----> 1[0;31m year = widgets.IntSlider(
-[0m[1;32m      2[0m     [0mvalue[0m[0;34m=[0m [0;36m2016[0m[0;34m,[0m[0;34m[0m[0;34m[0m[0m
-[1;32m      3[0m     [0mmin[0m[0;34m=[0m[0;36m2011[0m[0;34m,[0m[0;34m[0m[0;34m[0m[0m
-[1;32m      4[0m     [0mmax[0m[0;34m=[0m[0;36m2021[0m[0;34m,[0m[0;34m[0m[0;34m[0m[0m
-[1;32m      5[0m     [0mstep[0m[0;34m=[0m[0;36m1.0[0m[0;34m,[0m[0;34m[0m[0;34m[0m[0m
-
-[0;31mNameError[0m: name 'widgets' is not defined
-NameError: name 'widgets' is not defined
+  File "/home/aymeric/anaconda3/envs/analyse_tweets/lib/python3.9/site-packages/nbclient/client.py", line 838, in async_execute_cell
+    exec_reply = await self.task_poll_for_reply
+  File "/home/aymeric/anaconda3/envs/analyse_tweets/lib/python3.9/site-packages/nbclient/client.py", line 650, in _async_poll_for_reply
+    await self._async_handle_timeout(timeout, cell)
+  File "/home/aymeric/anaconda3/envs/analyse_tweets/lib/python3.9/site-packages/nbclient/client.py", line 697, in _async_handle_timeout
+    raise CellTimeoutError.error_from_timeout_and_cell(
+nbclient.exceptions.CellTimeoutError: A cell timed out while it was being executed, after 30 seconds.
+The message was: Cell execution timed out.
+Here is a preview of the cell contents:
+-------------------
+df0= pd.read_csv(f"{path_base}corpus_tweets.csv", sep = ",", dtype = dic_id)
+-------------------
 
