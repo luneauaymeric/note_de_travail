@@ -59,7 +59,7 @@ for x in [x for x in pd.read_csv(glob.glob(f'{path_base}sm/*.csv')[0]).columns i
 df0= pd.read_csv(f"{path_base}corpus_tweets.csv", sep = ",", dtype = dic_id)
 
 
-# In[5]:
+# In[8]:
 
 
 
@@ -67,7 +67,7 @@ df0= pd.read_csv(f"{path_base}corpus_tweets.csv", sep = ",", dtype = dic_id)
 users = pd.read_csv(f'{path_base}recoded_user_sm_predicted.csv',dtype=dic_id)
 
 
-# In[6]:
+# In[9]:
 
 
 df0 = df0[['query', 'id', 'timestamp_utc', 'local_time',
@@ -76,14 +76,14 @@ df0 = df0[['query', 'id', 'timestamp_utc', 'local_time',
            'BRAF', 'MET', 'RET', 'HER2', 'date']]
 
 
-# In[7]:
+# In[10]:
 
 
 df0['date'] = pd.to_datetime(pd.to_datetime(df0['date']).dt.date)
 df0['Year'] = df0['date'].dt.year
 
 
-# In[8]:
+# In[11]:
 
 
 df=df0.merge(users,on=['user_id'], how = "inner")#how = inner by default
@@ -92,7 +92,7 @@ df = df.loc[(df["User_status"] != "Other") & (df["User_status"] != "Undefined") 
 df["somme_biom"] = df['ROS1'] +df['ALK']+df['EXON']+df['EGFR']+df['KRAS']+df['NTRK']+df['BRAF']+df["MET"]+df['RET']+df["HER2"]
 
 
-# In[9]:
+# In[12]:
 
 
 df['month_year'] = df['date'].dt.to_period('M')
@@ -101,12 +101,12 @@ biom=['ROS1', 'ALK','EXON', 'EGFR','KRAS','NTRK','BRAF',"MET",'RET',"HER2"]#
 
 # ## Moyenne mobile
 
-# In[10]:
+# In[13]:
 
 
 df["month"] = df["date"].dt.month
 df["day"] = df["date"].dt.day
-df2 = df.loc[(df["somme_biom"] >= 1) & (df["Year"] >= 2012)]
+df2 = df.loc[(df["somme_biom"] >= 0) & (df["Year"] >= 2012)]
 df2 = df2.groupby(["month_year"]).agg(nb_tweets = ("id", "count")).reset_index()
 df2['pandas_SMA_3'] = df2.iloc[:,1].rolling(window=12, center = True).mean()
 df2["month_year_str"] = df2["month_year"].dt.strftime("%Y-%m")
@@ -125,12 +125,12 @@ plt.suptitle('Evolution du nombre de tweets contenant au moins une référence �
 plt.show()
 
 
-# In[11]:
+# In[14]:
 
 
 df["month"] = df["date"].dt.month
 df["day"] = df["date"].dt.day
-df2 = df.loc[(df["somme_biom"] >= 1) & (df["Year"] < 2018)]
+df2 = df.loc[(df["somme_biom"] >= 0) & (df["Year"] < 2018)]
 df2 = df2.groupby(["month_year"]).agg(nb_tweets = ("id", "count")).reset_index()
 df2['pandas_SMA_3'] = df2.iloc[:,1].rolling(window=12, center = True).mean()
 df2["month_year_str"] = df2["month_year"].dt.strftime("%Y-%m")
@@ -149,12 +149,12 @@ plt.suptitle('Evolution du nombre de tweets contenant au moins une référence �
 plt.show()
 
 
-# In[12]:
+# In[15]:
 
 
 df["month"] = df["date"].dt.month
 df["day"] = df["date"].dt.day
-df2 = df.loc[(df["somme_biom"] >= 1) & (df["Year"] >= 2018)]
+df2 = df.loc[(df["somme_biom"] >= 0) & (df["Year"] >= 2018)]
 df2 = df2.groupby(["month_year"]).agg(nb_tweets = ("id", "count")).reset_index()
 df2['pandas_SMA_3'] = df2.iloc[:,1].rolling(window=12, center = True).mean()
 df2["month_year_str"] = df2["month_year"].dt.strftime("%Y-%m")
@@ -175,10 +175,10 @@ plt.show()
 
 # ## Série corrigée des variation saisonnières
 
-# In[13]:
+# In[18]:
 
 
-df2 = df.loc[(df["somme_biom"] >= 1) & (df["Year"] < 2018)]
+df2 = df.loc[(df["somme_biom"] >= 0) & (df["Year"] < 2018)]
 df2 = df2.groupby(["month_year"]).agg(nb_tweets = ("id", "count")).reset_index()
 
 df2.reset_index(inplace=True)
@@ -187,7 +187,7 @@ df2 = df2.set_index(pd.DatetimeIndex(df2['month_year']))
 df2 = df2.drop(columns = ["index"])
 
 
-# In[14]:
+# In[19]:
 
 
 from statsmodels.tsa.seasonal import seasonal_decompose
@@ -203,10 +203,10 @@ plt.suptitle('Série corrigée des variations saisonnières sur la période 2012
 plt.show()
 
 
-# In[15]:
+# In[20]:
 
 
-df2 = df.loc[(df["somme_biom"] >= 1) & (df["Year"] >= 2018)]
+df2 = df.loc[(df["somme_biom"] >= 0) & (df["Year"] >= 2018)]
 df2 = df2.groupby(["month_year"]).agg(nb_tweets = ("id", "count")).reset_index()
 
 df2.reset_index(inplace=True)
@@ -215,7 +215,7 @@ df2 = df2.set_index(pd.DatetimeIndex(df2['month_year']))
 df2 = df2.drop(columns = ["index"])
 
 
-# In[16]:
+# In[21]:
 
 
 from statsmodels.tsa.seasonal import seasonal_decompose
@@ -233,13 +233,13 @@ plt.show()
 
 # ### 2012-2017
 
-# In[17]:
+# In[29]:
 
 
 
-for i, x in enumerate(df["User_status"].unique()):
+for i, x in enumerate(df["User_status2"].unique()):
 
-    df2 = df.loc[(df["somme_biom"] >= 1) & (df["Year"] < 2018) & (df["User_status"] == x)]
+    df2 = df.loc[(df["somme_biom"] >= 0) & (df["Year"] < 2018) & (df["User_status2"] == x)]
     df2 = df2.groupby(["month_year"]).agg(nb_tweets = ("id", "count")).reset_index()
 
     df2.reset_index(inplace=True)
@@ -262,13 +262,13 @@ for i, x in enumerate(df["User_status"].unique()):
 
 # ### 2018-2021
 
-# In[18]:
+# In[31]:
 
 
 
-for i, x in enumerate(df["User_status"].unique()):
+for i, x in enumerate(df["User_status2"].unique()):
 
-    df2 = df.loc[(df["somme_biom"] >= 1) & (df["Year"] >= 2018) & (df["User_status"] == x)]
+    df2 = df.loc[(df["somme_biom"] >= 1) & (df["Year"] >= 2018) & (df["User_status2"] == x)]
     df2 = df2.groupby(["month_year"]).agg(nb_tweets = ("id", "count")).reset_index()
 
     df2.reset_index(inplace=True)
