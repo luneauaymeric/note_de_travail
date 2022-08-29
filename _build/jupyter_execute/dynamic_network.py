@@ -62,16 +62,16 @@ c_style = c.style.format(precision=0, na_rep='').set_caption("Les variables \"to
 c_style
 
 
-# Cette variable est intéressante puisqu'elle permet de produire des graphes dirigés et de se faire une idée des asymétries existant entre les acteurs ou entre les catégories. On peut alors faire l'hypothèse que l'analyse de ces interactions est intéressante pour comprendre comment la "datafication" de l'oncologie affecte la structure des relations entre patients, soignants et chercheurs. La matrice de gauche ci-dessous semble indiquer qu'un volume important de réponses provient des patients, des oncologistes ou des "advocacy patients" et est destiné à ces mêmes catégories. La matrice de droite rend compte quand à lui de la "densité" des liens, c'est-à-dire le nombre d'arcs observés divisés par le nombre maximumn d'arcs pouvant existant entre chacun des groupes. Le but est de prendre en compte la taille des groupes, considérant qu'il ne peut pas y avoir plus de liens qu'il n'y a de noeuds.
+# Cette variable est intéressante puisqu'elle permet de produire des graphes dirigés et de se faire une idée des asymétries existant entre les acteurs ou entre les catégories. On peut alors faire l'hypothèse que l'analyse de ces interactions est intéressante pour comprendre comment la "datafication" de l'oncologie affecte la structure des relations entre patients, soignants et chercheurs. La matrice de gauche ci-dessous semble indiquer qu'un volume important de réponses provient des patients, des oncologistes ou des "advocacy patients" et est destiné à ces mêmes catégories. La matrice de droite rend compte quand à elle de la "densité" des liens, c'est-à-dire le nombre d'arcs observés divisés par le nombre maximumn d'arcs pouvant existant entre chacun des groupes. Le but est de prendre en compte la taille des groupes, considérant qu'il ne peut pas y avoir plus de liens qu'il n'y a de noeuds.
 # 
 # Pour cela on pondère le nombre d'arcs observés par le nombre de noeuds composant chacun des deux groupes qu'ils relient. Par exemple, entre 2010 et 2022, sur les 7&nbsp;078 comptes annotés, on a distingué 478 patients et 915 oncologues. Si chaque patient avait répondu au moins une fois à chaque oncologue ou réciproquement, on comptabiliserait un total de 437&nbsp;370 arcs. Or, le nombre de liens observés est de 869 réponses envoyées par des patients à des oncologues, représentant environ 0,2&nbsp;% des liens possibles. Ce nombre est de 699 dans le cas inverse (réponse d'un oncologue à un patient), soit 0,16&nbsp;% environ des liens théoriques.
 # 
 # \begin{align}
-# \frac{\text{Nombre d'arcs des patients vers les oncologues}}{\text{nombre de patients} \times \text{nombre d'oncologues}} = \frac{869}{478\times915} \approx 0,20
+# \frac{\text{Nombre d'arcs des patients vers les oncologues}}{\text{nombre de patients} \times \text{nombre d'oncologues}} = \frac{869}{478\times915} \approx 0,0020
 # \end{align}
 # 
 # \begin{align}
-# \frac{\text{Nombre d'arcs des oncologues vers les patients}}{\text{nombre de patients} \times \text{nombre d'oncologues}} = \frac{699}{478\times915} \approx 0,16
+# \frac{\text{Nombre d'arcs des oncologues vers les patients}}{\text{nombre de patients} \times \text{nombre d'oncologues}} = \frac{699}{478\times915} \approx 0,0016
 # \end{align}
 # 
 # 
