@@ -46,7 +46,7 @@ len(corpus)
 # 
 # 
 
-# In[4]:
+# In[11]:
 
 
 # Step: Keep rows where to_username is not missing
@@ -80,9 +80,9 @@ c_style
 # 
 # Toutefois, les matrices ci-dessus donnent une vision statique des interaction entre les groupes. Les graphes interactifs ci-après vise donc à rendre visible leur "dynamique". Réalisés à l'aide de différentes librairies disponibles sous R, les graphes ont été construits de la manière suivantes:
 # 
-# 1. Seuls les réponse entre comptes annotés sont conservés, ce qui donne un "sous-corpus" de 218&nbsp;263 tweets sur 1&nbsp;221&nbsp;611.
+# 1. Seuls les réponses entre comptes annotés sont conservées, ce qui donne un "sous-corpus" de 218&nbsp;263 tweets sur 1&nbsp;221&nbsp;611.
 # 
-# 2. Pour des raisons de temps calcul, on ne garde que les noeuds dont le degré de centralité est supérieur ou égal à 20 (seuil fixé arbitrairement), ce qui siginifie qu'on a seulement les comptes qui ont publié ou reçu au moins vingt réponses sur l'ensemble des périodes considérées (pour le moment seul période du 1er janvier 2017 au 31 décmbre 2018 est représentée).
+# 2. Pour des raisons de temps calcul, on ne garde que les noeuds dont le degré de centralité est supérieur ou égal à 20 (seuil fixé arbitrairement), ce qui siginifie qu'on a seulement les comptes qui ont publié ou reçu au moins vingt réponses sur chaque période considérée (pour le moment seule la période du 1er janvier 2017 au 31 décmbre 2018 est représentée).
 # 
 # 3. Pour chaque noeud, on définit une date d'arrivée et une date de départ qui correspondent respectivement à la première et à la dernière réponse publiée ou reçue.
 # 
@@ -100,7 +100,7 @@ c_style
 # 
 # 
 
-# In[5]:
+# In[6]:
 
 
 #%%html
@@ -113,7 +113,7 @@ c_style
 # 
 # 
 
-# In[6]:
+# In[15]:
 
 
 IFrame(src="_static/videos/dynet_2017-01-01.html", width = "900", height="800")
@@ -121,7 +121,7 @@ IFrame(src="_static/videos/dynet_2017-01-01.html", width = "900", height="800")
 
 # ### Graphe des catégories de statut
 # 
-# En réduisant le graphe des comptes au graphes des échanges entre catégories, on a conservé les réponses intra-groupe, c'est-à-dire le fait qu'un patient réponde à un autre patient par exemple. Malheureusement, ces "boucles" ne sont pas représentées sur l'animation ci-dessous.
+# En réduisant le graphe des comptes au graphes des échanges entre catégories, on a conservé les réponses intra-groupe, c'est-à-dire le fait qu'un patient réponde à un autre patient par exemple. Malheureusement, ces "boucles" ne sont pas représentées sur l'animation ci-dessous. Lorsque les noeuds sont sans liens, cela signifie que les échanges se font uniquement au sein du groupe.
 
 # In[7]:
 
