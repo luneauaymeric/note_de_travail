@@ -46,7 +46,7 @@ corpus = pd.read_csv(f"{path_base}corpus_tweets.csv", sep = ",")
 # 
 # 
 
-# In[37]:
+# In[4]:
 
 
 # Step: Keep rows where to_username is not missing

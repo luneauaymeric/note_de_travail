@@ -51,6 +51,8 @@ const thebe_selector_input = "pre"
 const thebe_selector_output = ".output, .cell_output"
 </script>
     <script async="async" src="_static/sphinx-thebe.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    <script src="https://unpkg.com/@jupyter-widgets/html-manager@^0.20.0/dist/embed-amd.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
     <link rel="next" title="Travail sur les catégories" href="regroupement_categorie.html" />
@@ -425,13 +427,12 @@ title="Print to PDF"
 <p>Si certaines règles sont communes à l’ensemble des biomarqueurs, d’autres sont spécifiques. Par exemple, dans le cas du biomarqueur “RET”, les lettres  <em>a, s, u, e, y, h</em> sont remplacées par <em>a, e, i, o, u, r, h, z, w</em> pour éviter que des mots comme “retweet” soient comptés. À noter également que dans le cas des biomarqueurs “ALK”, “MET” et “RET”, on ne prend en compte que les formes en majuscule. Pour les autres, l’algorithme de recherche est insensible à la casse.</p>
 <p>Enfin, ces expressions régulières sont recherchées à l’aide de la fonction “search” du module <em>re</em> du langage Python. Cette fonction retourne “vrai” si l’expression est trouvée, “faux” dans le cas contraire. Par ailleurs, elle s’arrête à la première expression trouvée. Autrement dit, la fonction indique simplement si l’expression est présente quelque soit le nombre de fois où elle apparaît dans le tweet. Le tableau ci-après illustre le résultat obtenu pour une dizaine de phrases avec chacune des deux méthodes (sans ou avec les expressions régulières).</p>
 <p>La principale limite de cette seconde méthode est qu’elle conduit à définir de nombreuses exceptions pour éviter que des “vrais positifs” soit traités comme des “faux positifs”. Ainsi, la règle qui consiste à ne pas compter les chaînes de caractère constituées de MET suivi d’un “a”, comme <em>METastasis</em>, a pour effet également d’exclure les formes du types <em>METamp</em>. La liste des formes exclues est placée à la fin de ce document.</p>
-<div class="admonition-illustration-de-l-algorythme admonition">
-<p class="admonition-title">Illustration de l’algorythme</p>
+<p>:::{admonition} Illustration de l’algorythme</p>
 <ol class="simple">
 <li><p>Le tweet initial :</p></li>
 </ol>
 <blockquote>
-<div><p>“MET copy number as a secondary driver of EGFR TKI resistance in EGFR-mutant NSCLC <a class="reference external" href="http://bit.ly/2HfGHjn">http://bit.ly/2HfGHjn</a> #editorial #lcsm”</p></p>
+<div><p>“MET copy number as a secondary driver of EGFR TKI resistance in EGFR-mutant NSCLC http://bit.ly/2HfGHjn #editorial #lcsm”</p></p>
 </div></blockquote>
 <ol class="simple">
 <li><p>Le tweet nettoyé (les “/”, “.”, “,” et “-” sont remplacés par des espaces) :</p></li>
@@ -448,7 +449,7 @@ title="Print to PDF"
 <ol class="simple">
 <li><p>La recherche du biomarqueur se fait ensuite à partir de la liste des termes entre crochets ci-dessus. Dans cet exemple, on a bien le terme “MET”. On constate que le tweet fait égalment référence au biomarqueur EGFR.</p></li>
 </ol>
-</div>
+<p>:::</p>
 <div class="cell tag_remove-input docutils container">
 <div class="cell_output docutils container">
 <div class="output text_html"><style type="text/css">
