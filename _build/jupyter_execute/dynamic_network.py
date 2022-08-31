@@ -46,7 +46,7 @@ len(corpus)
 # 
 # 
 
-# In[4]:
+# In[11]:
 
 
 # Step: Keep rows where to_username is not missing
@@ -100,7 +100,7 @@ c_style
 # 
 # 
 
-# In[5]:
+# In[6]:
 
 
 #%%html
@@ -111,7 +111,7 @@ c_style
 # 
 # ### Graphes des comptes
 
-# In[6]:
+# In[16]:
 
 
 IFrame(src="_static/videos/dynet_2012-01-02.html", width = "900", height="800")
@@ -121,7 +121,7 @@ IFrame(src="_static/videos/dynet_2012-01-02.html", width = "900", height="800")
 # 
 # En réduisant le graphe des comptes au graphes des échanges entre catégories, on a conservé les réponses intra-groupe, c'est-à-dire le fait qu'un patient réponde à un autre patient par exemple. Malheureusement, ces "boucles" ne sont pas représentées sur l'animation ci-dessous. Lorsque les noeuds sont sans liens, cela signifie que les échanges se font uniquement au sein du groupe.
 
-# In[7]:
+# In[17]:
 
 
 IFrame(src="_static/videos/dynet_2012-01-02_status.html", width = "900", height="800")
@@ -133,13 +133,13 @@ IFrame(src="_static/videos/dynet_2012-01-02_status.html", width = "900", height=
 # 
 # 
 
-# In[8]:
+# In[15]:
 
 
 IFrame(src="_static/videos/dynet_2017-01-01.html", width = "900", height="800")
 
 
-# In[9]:
+# In[15]:
 
 
 IFrame(src="_static/videos/dynet_2017-01-01.html", width = "900", height="800")
@@ -148,7 +148,7 @@ IFrame(src="_static/videos/dynet_2017-01-01.html", width = "900", height="800")
 # ### Graphe des catégories de statut
 # 
 
-# In[10]:
+# In[7]:
 
 
 IFrame(src="_static/videos/dynet_2017-01-01_status.html", width = "900", height="800")

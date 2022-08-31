@@ -58,7 +58,7 @@ for x in [x for x in pd.read_csv(glob.glob(f'{path_base}sm/*.csv')[0]).columns i
 df0= pd.read_csv(f"{path_base}corpus_tweets.csv", sep = ",", dtype = dic_id)
 
 
-# In[5]:
+# In[55]:
 
 
 
@@ -66,7 +66,7 @@ df0= pd.read_csv(f"{path_base}corpus_tweets.csv", sep = ",", dtype = dic_id)
 users = pd.read_csv(f'{path_base}recoded_user_sm_predicted.csv',dtype=dic_id)
 
 
-# In[6]:
+# In[56]:
 
 
 df0 = df0[['query', 'id', 'timestamp_utc', 'local_time',
@@ -75,21 +75,21 @@ df0 = df0[['query', 'id', 'timestamp_utc', 'local_time',
            'BRAF', 'MET', 'RET', 'HER2', 'date']]
 
 
-# In[7]:
+# In[57]:
 
 
 df0['date'] = pd.to_datetime(pd.to_datetime(df0['date']).dt.date)
 df0['Year'] = df0['date'].dt.year
 
 
-# In[8]:
+# In[58]:
 
 
 df=df0.merge(users,on=['user_id'], how = "inner")#how = inner by default
 df = df.loc[(df["User_status"] != "Other") & (df["User_status"] != "Undefined") & (df["Year"] >= 2012)]
 
 
-# In[9]:
+# In[59]:
 
 
 def time_series2(data, time_length, year_base):
@@ -120,7 +120,7 @@ def time_series2(data, time_length, year_base):
     return(datadate)
 
 
-# In[10]:
+# In[60]:
 
 
 time_length = "Year"
@@ -130,7 +130,11 @@ dftime = time_series2(data = df, time_length = time_length, year_base = 2018)
 
 
 
-# In[11]:
+# # Quelques graphiques
+# 
+# Les différents graphiques qui suivent donne un aperçu de la distribution dans le temps des rôles et des références aux différents biomarqueurs.
+
+# In[61]:
 
 
 df=df0.merge(users,on=['user_id'], how = "inner")#how = inner by default
@@ -230,7 +234,7 @@ fig0.update_layout(
 fig0.show()
 
 
-# In[12]:
+# In[62]:
 
 
 def time_series(data, time_length, x, year_base):
@@ -290,16 +294,14 @@ def time_series(data, time_length, x, year_base):
     return(datatemp)
 
 
-# # Quelques graphiques
 # 
-# Les différents graphiques qui suivent donne un aperçu de la distribution dans le temps des rôles et des références aux différents biomarqueurs.
 # 
 # ## Des professionnels de plus en plus présents
 # 
-# L'analyse de la distribution des rôles montre la présence croissante des professionnels, en particulier des oncologues (*oncologists*) et, dans une moindre, des chercheurs. Alors que les oncologues représentent un peu moins de 5% des comptes en 2012, ils constituent environ 27% des comptes en 2020. La part des professionnel de santé (*health professional*) semble quant à elle relativement stable dans le temps. La proportion de comptes jouant les rôles de patients, c'est-à-dire les *survivors* et les *cancer patient*, ne dépasse pas les 10% sur toutes la périodes. On observe également une faible représentation des "défenseurs de causes" (*advocacy*). Rappelons toutefois que cette catégorie comprend les comptes qui ne jouent pas d'autres rôles. Par exemple, un "survivant" qui a été annoté également comme un défenseur de cause (*advocacy*) sera compté parmi les patients et non les *advocacy*.
 # 
+# L'analyse de la distribution des rôles montre la présence croissante des professionnels, en particulier des oncologues (*oncologists*) et, dans une moindre mesure, des chercheurs.
 
-# In[13]:
+# In[63]:
 
 
 time_length = "Year"
@@ -311,7 +313,7 @@ dftime = time_series(data = df, time_length = time_length, x = x, year_base= 201
 dftime = time_series2(data = df, time_length = time_length, year_base= 2018)
 
 
-# In[14]:
+# In[64]:
 
 
 dftime = time_series2(data = df, time_length = time_length, year_base= 2018)
@@ -358,7 +360,7 @@ data = {"role" : list_role,
 evol_global_tweets = pd.DataFrame(data)
 
 
-# In[15]:
+# In[65]:
 
 
 dftime = time_series(data = df, time_length = time_length, x = x, year_base= 2018)
@@ -412,7 +414,7 @@ evol_global_tweets2 = evol_global_tweets2.drop(columns = ["role"])
 
 evol_global_tweets2.columns = pd.MultiIndex.from_product([['Ensemble de la période (2011-2021)', 'Période 2011-2017', 'Période 2018-2021'],
                                     ["Coefficient global","Coefficient annuel moyen"]])
-evol_global_tweets2_style = evol_global_tweets2.style.format(precision=2, na_rep='').set_caption("Evolution du nombre de comptes par catégorie d'acteur (selon la variable User_status)") .set_table_styles([{
+evol_global_tweets2_style = evol_global_tweets2.style.format(precision=2, na_rep='').set_caption("Evolution du nombre de tweets par catégorie d'acteur (selon la variable User_status)") .set_table_styles([{
      'selector': 'caption',
      'props': 'caption-side: top'
  }], overwrite=False)
@@ -421,7 +423,7 @@ evol_global_tweets2_style
 
 # Le tableau ci-dessus montre que le nombre de tweets a été multiplié en moyenne par 1,21 chaque année entre 2011 et 2021. Cette croissance s'observe principalement sur la période 2011-2017. On observe ensuite un diminution progressive sur la période 2018-2021. Au cours de cette seconde période, la baisse la plus importante concerne les tweets publiés par les "Advocacy Patients" : le nombre de tweets en 2021 est divisé par deux par rapport à 2018 et a été divisé par 1,25 en moyenne les trois dernière années. À l'inverse la plus forte croissance est observée parmi les médias, dont le nombre de tweets a été multiplié par 1,12 en moyenne chaque année.
 
-# In[16]:
+# In[66]:
 
 
 dftime = time_series2(data = df, time_length = time_length, year_base= 2018)
@@ -468,7 +470,7 @@ data = {"role" : list_role,
 evol_global_users = pd.DataFrame(data)
 
 
-# In[17]:
+# In[67]:
 
 
 dftime = time_series(data = df, time_length = time_length, x = x, year_base= 2018)
@@ -529,17 +531,17 @@ evol_global_users2_style = evol_global_users2.style.format(precision=2, na_rep='
 evol_global_users2_style
 
 
-# Si on s'intéresse cette fois au nombre de comptes, on observe une croissance annuelle moyenne de 27 % entre 2011 et 2021. On constate également une première phase de croissance globale entre 2011 et 2017, puis une relative stagnation entre 2018 et 2021. La diminution du nombre de tweets publiés par les "Advocacy patients" s'accompagne d'une baisse du nombre de comptes liés à cette  catégorie. En revanche, le nombre de compte des oncologues et les chercheurs ont continué de croître de 6 et 4 % par an en moyenne. Enfin, le nombre de média a diminiué de 3% par an entre 2018 et 2021. Rapporté à l'augmentation du nombre de tweets publiés par cette même catégorie, on peut supposer l'émergence de médias spécialisés.
+# Si on s'intéresse cette fois au nombre de comptes indépendamment du statut (voir "Global"), on observe une croissance annuelle moyenne de 27 % entre 2011 et 2021. On constate également une première phase de croissance globale entre 2011 et 2017, puis une relative stagnation entre 2018 et 2021. La diminution du nombre de tweets publiés par les "Advocacy patients" s'accompagne d'une baisse du nombre de comptes liés à cette  catégorie. En revanche, le nombre de compte des oncologues et les chercheurs ont continué de croître de 6 et 4 % par an en moyenne. Enfin, le nombre de média a diminiué de 3% par an entre 2018 et 2021. Rapporté à l'augmentation du nombre de tweets publiés par cette même catégorie, peut-on supposer l'émergence de médias spécialisés ?
 
 # ````{margin}
 # ```{note}
-# La variable *User_status* est une "réduction" de la variable *User_role2*. Ainsi, la modalité "Health professionals" regroupe les rôles d'oncologues, de chercheurs et de professionnels de la santé (hors médecins).
+# La variable *User_status* est une "réduction" de la variable *User_role3*. La modalité *Advocacy* rassemble tous les comptes considérés comme jouant un rôle d’advocacy, sauf si ce sont des professionnels de santé ou des patients. Dans le cas des professionnels de santé, ceux qui joue un rôle d’advocacy sont placés avec les *Health professional*. Dans le cas des patients, on a distingué les patients qui font un travail de plaidoyer des autres patients. Par ailleurs, qu’il s’agisse des *Patients* ou des *Advocacy patients*, ces deux modalités réunissent en leur sein les survivors et les cancer patients.
 # ```
 # ````
 
 # Les diagrammes ci-dessous représentent l'évolution du nombre de compte et de tweets publiés en fonction des différents recodages effectués.
 
-# In[18]:
+# In[100]:
 
 
 df=df0.merge(users,on=['user_id'], how = "inner")#how = inner by default
@@ -644,7 +646,7 @@ fig.update_layout(
 fig.show()
 
 
-# In[19]:
+# In[ ]:
 
 
 
@@ -738,7 +740,7 @@ fig1.update_layout(
 fig1.show()
 
 
-# In[20]:
+# In[ ]:
 
 
 
@@ -830,7 +832,7 @@ fig2.update_layout(
 fig2.show()
 
 
-# In[21]:
+# In[ ]:
 
 
 
@@ -922,13 +924,13 @@ fig3.update_layout(
 fig3.show()
 
 
-# In[22]:
+# In[ ]:
 
 
 #sns.lineplot(x = 'Year', y = "prop", data = dftime, hue = x)
 
 
-# In[23]:
+# In[ ]:
 
 
 import seaborn as sns
@@ -942,7 +944,7 @@ g.fig.subplots_adjust(top=0.9) # adjust the Figure in rp
 g.fig.suptitle('Evolution du nombre de tweets par statuts et par an (base 100 en 2018)')
 
 
-# In[24]:
+# In[ ]:
 
 
 df=df0.merge(users,on=['user_id'], how = "inner")#how = inner by default
@@ -951,7 +953,7 @@ df = df.loc[(df["User_status"] != "Other") & (df["User_status"] != "Undefined") 
 df["somme_biom"] = df['ROS1'] +df['ALK']+df['EXON']+df['EGFR']+df['KRAS']+df['NTRK']+df['BRAF']+df["MET"]+df['RET']+df["HER2"]
 
 
-# In[25]:
+# In[ ]:
 
 
 def time_series3(data, time_length, year_base):
@@ -967,7 +969,7 @@ def time_series3(data, time_length, year_base):
     return(datadate)
 
 
-# In[26]:
+# In[ ]:
 
 
 def time_series4(data, time_length, year_base, bio):
@@ -994,14 +996,14 @@ def time_series4(data, time_length, year_base, bio):
     
 
 
-# In[27]:
+# In[ ]:
 
 
 
 df_biom = time_series3(data = df, time_length = "Year", year_base = 2018)
 
 
-# In[28]:
+# In[ ]:
 
 
 time_length = "Year"
@@ -1094,7 +1096,7 @@ fig01.update_layout(
 fig01.show()
 
 
-# In[29]:
+# In[ ]:
 
 
 biom=['ROS1', 'ALK','EXON', 'EGFR','KRAS','NTRK','BRAF',"MET",'RET',"HER2"]#
@@ -1110,7 +1112,7 @@ for i,bio in enumerate(biom):
         biomm=pd.concat([biomm,df_tmp])
 
 
-# In[30]:
+# In[ ]:
 
 
 list_of_compute = ['nb_mentionned_biom', 'prop_of_biom', #'average_publication',
@@ -1202,7 +1204,7 @@ fig4.update_layout(
 fig4.show()
 
 
-# In[31]:
+# In[ ]:
 
 
 
@@ -1214,7 +1216,7 @@ g.fig.subplots_adjust(top=0.9) # adjust the Figure in rp
 g.fig.suptitle('Evolution annuelle du nombre de tweets mentionnant chacun des biomarqueurs')
 
 
-# In[32]:
+# In[ ]:
 
 
 df['month_year'] = df['date'].dt.to_period('M')
@@ -1231,7 +1233,7 @@ for i,bio in enumerate(biom):
         biomm=pd.concat([biomm,df_tmp])
 
 
-# In[33]:
+# In[ ]:
 
 
 biomm["month"] = biomm["month_year"].dt.strftime('%Y-%m')
@@ -1327,7 +1329,7 @@ fig5.update_layout(
 fig5.show()
 
 
-# In[34]:
+# In[ ]:
 
 
 biom=['ROS1', 'ALK','EXON', 'EGFR','KRAS','NTRK','BRAF',"MET",'RET',"HER2"]#
@@ -1377,7 +1379,7 @@ data = {"Biomarqueurs" : list_bio,
 evol_global_mentions = pd.DataFrame(data)
 
 
-# In[35]:
+# In[ ]:
 
 
 biom=['ROS1', 'ALK','EXON', 'EGFR','KRAS','NTRK','BRAF',"MET",'RET',"HER2"]#
@@ -1447,7 +1449,7 @@ evol_global_mentions2_style
 # 
 # Toutefois, les biomarqueurs ne connaissent pas la même évolution. On remarque par exemple que le nombre de tweets faisant au moins une référence au biomarqueur KRAS double en moyenne chaque année entre 2018 et 2021, tandis que les références au biomarqueur ROS1 ont diminué annuellement de 30% en moyenne. La forte croissance du biomarqueur EGFR doit par contre être interprétée avec précaution. Comme l'indique les graphiques ci-dessus, la croissance la plus forte se situe entre l'année 2012 et 2013 et est liée au très faible nombre de mentions en 2012 (seulement 2).
 
-# In[36]:
+# In[101]:
 
 
 biom=['ROS1', 'ALK','EXON', 'EGFR','KRAS','NTRK','BRAF',"MET",'RET',"HER2"]#
@@ -1500,7 +1502,7 @@ data = {"Biomarqueurs" : list_bio,
 evol_global_mentions = pd.DataFrame(data)
 
 
-# In[37]:
+# In[ ]:
 
 
 biom=['ROS1', 'ALK','EXON', 'EGFR','KRAS','NTRK','BRAF',"MET",'RET',"HER2"]#
@@ -1571,14 +1573,14 @@ evol_mensuelle_mentions2_style
 # 
 # Enfin, la matrice ci-après indique la part occupée par les différents biomarqueurs dans les tweets qui en mentionnent au moins un en fonction du statut de leurs auteurs. Par exemple, 30% des 2548 biomarqueurs cités par les "défenseurs de cause" (*advocacy*) concernent le marqueur EGFR. 
 
-# In[38]:
+# In[102]:
 
 
 df_status = df[["User_status", "id", 'ROS1', 'ALK', 'EXON', 'EGFR', 'KRAS', 'NTRK', 'BRAF', 'MET', 'RET', 'HER2']]
 df_tmp = df_status.loc[df_status["ALK"]==1].groupby(["User_status", "ALK"]).agg(ALK_c = ("id", "count"))
 
 
-# In[39]:
+# In[103]:
 
 
 biom = ['ROS1', 'ALK', 'EXON', 'EGFR', 'KRAS', 'NTRK', 'BRAF', 'MET', 'RET', 'HER2']
@@ -1610,7 +1612,7 @@ pivot_table.index = pivot_table[variable]
 pivot_table = pivot_table.drop(columns = [variable])
 
 
-# In[40]:
+# In[104]:
 
 
 biom = ['ROS1', 'ALK', 'EXON', 'EGFR', 'KRAS', 'NTRK', 'BRAF', 'MET', 'RET', 'HER2']
@@ -1649,14 +1651,14 @@ pivot_table1_style = pivot_table1.style.format(precision=0, na_rep='').set_capti
 pivot_table1_style
 
 
-# In[41]:
+# In[105]:
 
 
 fig = px.imshow(pivot_table,color_continuous_scale='reds', title = "Proportion des références aux différents biomarqueurs en fonction du statut des auteurs")
 fig.show()
 
 
-# In[42]:
+# In[106]:
 
 
 
@@ -1668,10 +1670,10 @@ res = sns.heatmap(pivot_table, annot=True, linewidths=.5, fmt='.2f',  cmap="Reds
 
 for t in res.texts: t.set_text(t.get_text() + " %")
 #plt.savefig('biomarkers_dist.pdf')
-res.set(title ="Proportion des références aux différents biomarqueurs en fonction du statut des auteurs")
+res.set(title ="Proportion des références aux biomarqueurs en fonction du statut des auteurs (% en ligne)")
 
 
-# In[43]:
+# In[107]:
 
 
 biom = ['ROS1', 'ALK', 'EXON', 'EGFR', 'KRAS', 'NTRK', 'BRAF', 'MET', 'RET', 'HER2']
@@ -1688,7 +1690,7 @@ for i, bio in enumerate(biom):
     else:
         pivot_table = pivot_table.merge(df_tmp, how = "left", on = [variable]) 
 
-pivot_table["somme_ligne"] = pivot_table[biom].sum(axis=1)
+pivot_table["Row_Total"] = pivot_table[biom].sum(axis=1)
 pivot_table.loc['Column_Total']= pivot_table.sum(numeric_only=True, axis=0)
 pivot_table = pivot_table.fillna("Total")
 
@@ -1709,17 +1711,17 @@ pivot_table = df_tmp.drop(columns = ["Total"])
 pivot_table.index = pivot_table["index"]
 pivot_table = pivot_table.drop(columns = ["index"])
 
-pivot_table
+pivot_table2 = pivot_table.transpose()
 
 
-# In[44]:
+# In[108]:
 
 
-fig = px.imshow(pivot_table,color_continuous_scale='reds', title = "Proportion des références aux différents biomarqueurs en fonction du statut des auteurs")
+fig = px.imshow(pivot_table2,color_continuous_scale='reds', title = "Part des statuts en fonction des références aux différents biomarqueurs (% en colonne)")
 fig.show()
 
 
-# In[45]:
+# In[109]:
 
 
 
@@ -1727,11 +1729,11 @@ fig.show()
 fig = plt.figure(num=None, figsize=(20, 15), dpi=80, facecolor='w', edgecolor='k')
 
 cpalette = sns.color_palette("GnBu_d")
-res = sns.heatmap(pivot_table, annot=True, linewidths=.5, fmt='.2f',  cmap="Reds")
+res = sns.heatmap(pivot_table2, annot=True, linewidths=.5, fmt='.2f',  cmap="Reds")
 
 for t in res.texts: t.set_text(t.get_text() + " %")
 #plt.savefig('biomarkers_dist.pdf')
-res.set(title ="Proportion des références aux différents biomarqueurs en fonction du statut des auteurs")
+res.set(title ="Part des statuts en fonction des références aux différents biomarqueurs (% en colonne)")
 
 
 # 
@@ -1739,6 +1741,66 @@ res.set(title ="Proportion des références aux différents biomarqueurs en fonc
 # Lecture de la matrice : 40% des références au biomarqueur MET sont le fait des oncologues, tandis que 27% des références au biomarqueur ALK proviennent des "Advocacy patiens".
 # ```
 # 
+
+# In[110]:
+
+
+pivot_table1 = pivot_table1.reset_index()
+
+
+# In[111]:
+
+
+biom = ['ROS1', 'ALK', 'EXON', 'EGFR', 'KRAS', 'NTRK', 'BRAF', 'MET', 'RET', 'HER2']
+list_status = []
+#col = biom.append("User_status")
+#dft = pd.DataFrame(columns = [biom])
+dict_score = {}
+
+for bio in biom:
+    list_score = []
+    for i, x in enumerate(pivot_table1[bio]):
+        n = pivot_table1["somme_ligne"].iloc[i]
+        m = pivot_table1[bio].iloc[-1]
+        total = pivot_table1["somme_ligne"].iloc[-1]
+        a = x
+        b = n-x
+        c= m-x
+        d = (total-n)-(c)
+        #print(a, b, c, d, n, m, total)
+        phi_score = ((a*d)-(b*c)) / np.sqrt(n*m*(total-n)*(total-m))
+        chi_square_value = total*np.square(phi_score)
+        normalised_score = x/(n*m)
+        #print(phi_score, chi_square_value)
+        list_score.append(phi_score)
+        #if chi_square_value > 6.6349:
+        #    list_score.append(phi_score)
+        #else:
+        #    list_score.append(np.nan)
+        dict_score[bio] = list_score
+
+for x in pivot_table1["User_status"]:
+        list_status.append(x)
+        dict_score["User_status"] = list_status
+
+
+# In[112]:
+
+
+dft = pd.DataFrame(dict_score)
+dft.index = dft ["User_status"]
+dft = dft.drop(columns=["User_status"])
+dft = dft.drop(labels=["Column_Total"])
+
+
+# In[113]:
+
+
+fig = px.imshow(dft,color_continuous_scale='Balance', title = "Corrélation entre biomarqueurs et statuts (coefficient de Phi)")
+fig.show()
+
+#fig.savefig('relation_biomarqueurs_status.png')
+
 
 # In[ ]:
 

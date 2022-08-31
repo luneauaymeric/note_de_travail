@@ -51,8 +51,6 @@ const thebe_selector_input = "pre"
 const thebe_selector_output = ".output, .cell_output"
 </script>
     <script async="async" src="_static/sphinx-thebe.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
-    <script src="https://unpkg.com/@jupyter-widgets/html-manager@^0.20.0/dist/embed-amd.js"></script>
     <script>window.MathJax = {"options": {"processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
     <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
@@ -456,13 +454,13 @@ title="Print to PDF"
 <div class="cell tag_remove-input docutils container">
 <div class="cell_output docutils container">
 <div class="output text_html"><style type="text/css">
-#T_8b9e2_ caption {
+#T_8210a_ caption {
   caption-side: top;
   color: black;
   font-size: 14pt;
 }
 </style>
-<table id="T_8b9e2_">
+<table id="T_8210a_">
   <caption>Les variables "to_username" (replying to @username) et "mentioned_names" (@username) telles qu'elles se présentent dans le dataset</caption>
   <thead>
     <tr>
@@ -476,12 +474,12 @@ title="Print to PDF"
   </thead>
   <tbody>
     <tr>
-      <th id="T_8b9e2_level0_row0" class="row_heading level0 row0" >0</th>
-      <td id="T_8b9e2_row0_col0" class="data row0 col0" >0</td>
-      <td id="T_8b9e2_row0_col1" class="data row0 col1" >SueDHellmann</td>
-      <td id="T_8b9e2_row0_col2" class="data row0 col2" >PearlF</td>
-      <td id="T_8b9e2_row0_col3" class="data row0 col3" >pearlf|us_fda</td>
-      <td id="T_8b9e2_row0_col4" class="data row0 col4" >https://twitter.com/SueDHellmann/statuses/1111412159768977415</td>
+      <th id="T_8210a_level0_row0" class="row_heading level0 row0" >0</th>
+      <td id="T_8210a_row0_col0" class="data row0 col0" >0</td>
+      <td id="T_8210a_row0_col1" class="data row0 col1" >SueDHellmann</td>
+      <td id="T_8210a_row0_col2" class="data row0 col2" >PearlF</td>
+      <td id="T_8210a_row0_col3" class="data row0 col3" >pearlf|us_fda</td>
+      <td id="T_8210a_row0_col4" class="data row0 col4" >https://twitter.com/SueDHellmann/statuses/1111412159768977415</td>
     </tr>
   </tbody>
 </table>
@@ -489,12 +487,12 @@ title="Print to PDF"
 </div>
 <p>Cette variable est intéressante puisqu’elle permet de produire des graphes dirigés et de se faire une idée des asymétries existant entre les acteurs ou entre les catégories. On peut alors faire l’hypothèse que l’analyse de ces interactions est intéressante pour comprendre comment la “datafication” de l’oncologie affecte la structure des relations entre patients, soignants et chercheurs. La matrice de gauche ci-dessous semble indiquer qu’un volume important de réponses provient des patients, des oncologistes ou des “advocacy patients” et est destiné à ces mêmes catégories. La matrice de droite rend compte quand à elle de la “densité” des liens, c’est-à-dire le nombre d’arcs observés divisés par le nombre maximumn d’arcs pouvant existant entre chacun des groupes. Le but est de prendre en compte la taille des groupes, considérant qu’il ne peut pas y avoir plus de liens qu’il n’y a de noeuds.</p>
 <p>Pour cela on pondère le nombre d’arcs observés par le nombre de noeuds composant chacun des deux groupes qu’ils relient. Par exemple, entre 2010 et 2022, sur les 7 078 comptes annotés, on a distingué 478 patients et 915 oncologues. Si chaque patient avait répondu au moins une fois à chaque oncologue ou réciproquement, on comptabiliserait un total de 437 370 arcs. Or, le nombre de liens observés est de 869 réponses envoyées par des patients à des oncologues, représentant environ 0,2 % des liens possibles. Ce nombre est de 699 dans le cas inverse (réponse d’un oncologue à un patient), soit 0,16 % environ des liens théoriques.</p>
-<div class="amsmath math notranslate nohighlight" id="equation-8b0cc7a9-e33b-4d10-835f-cb6d1774c9f4">
-<span class="eqno">(1)<a class="headerlink" href="#equation-8b0cc7a9-e33b-4d10-835f-cb6d1774c9f4" title="Permalink to this equation">#</a></span>\[\begin{align}
+<div class="amsmath math notranslate nohighlight" id="equation-4807457e-52d6-4b29-884b-54c18acf6c41">
+<span class="eqno">(1)<a class="headerlink" href="#equation-4807457e-52d6-4b29-884b-54c18acf6c41" title="Permalink to this equation">#</a></span>\[\begin{align}
 \frac{\text{Nombre d'arcs des patients vers les oncologues}}{\text{nombre de patients} \times \text{nombre d'oncologues}} = \frac{869}{478\times915} \approx 0,0020
 \end{align}\]</div>
-<div class="amsmath math notranslate nohighlight" id="equation-97b2b5e9-2aaa-46e7-89bb-da2908ca71b1">
-<span class="eqno">(2)<a class="headerlink" href="#equation-97b2b5e9-2aaa-46e7-89bb-da2908ca71b1" title="Permalink to this equation">#</a></span>\[\begin{align}
+<div class="amsmath math notranslate nohighlight" id="equation-4118eca5-3f6f-482c-831e-02d2a32ac36e">
+<span class="eqno">(2)<a class="headerlink" href="#equation-4118eca5-3f6f-482c-831e-02d2a32ac36e" title="Permalink to this equation">#</a></span>\[\begin{align}
 \frac{\text{Nombre d'arcs des oncologues vers les patients}}{\text{nombre de patients} \times \text{nombre d'oncologues}} = \frac{699}{478\times915} \approx 0,0016
 \end{align}\]</div>
 <p><img alt="densite_des_interactions.png" src="_images/densite_des_interactions.png" /></p>
@@ -590,7 +588,7 @@ title="Print to PDF"
 <div class="output text_html">
 <iframe
     width="900"
-    height="800"
+    height="500"
     src="_static/videos/dynet_2017-01-01_status.html"
     frameborder="0"
     allowfullscreen
@@ -601,12 +599,6 @@ title="Print to PDF"
 </section>
 </section>
 </section>
-
-
-<script type="application/vnd.jupyter.widget-state+json">
-{"state": {"d5006e2ddce640249e007f94b5a10f60": {"model_name": "LayoutModel", "model_module": "@jupyter-widgets/base", "model_module_version": "1.2.0", "state": {"_model_module": "@jupyter-widgets/base", "_model_module_version": "1.2.0", "_model_name": "LayoutModel", "_view_count": null, "_view_module": "@jupyter-widgets/base", "_view_module_version": "1.2.0", "_view_name": "LayoutView", "align_content": null, "align_items": null, "align_self": null, "border": null, "bottom": null, "display": null, "flex": null, "flex_flow": null, "grid_area": null, "grid_auto_columns": null, "grid_auto_flow": null, "grid_auto_rows": null, "grid_column": null, "grid_gap": null, "grid_row": null, "grid_template_areas": null, "grid_template_columns": null, "grid_template_rows": null, "height": null, "justify_content": null, "justify_items": null, "left": null, "margin": null, "max_height": null, "max_width": null, "min_height": null, "min_width": null, "object_fit": null, "object_position": null, "order": null, "overflow": null, "overflow_x": null, "overflow_y": null, "padding": null, "right": null, "top": null, "visibility": null, "width": null}}, "d5961b0457d040d1b97aa0a1bbd08bd1": {"model_name": "VBoxModel", "model_module": "@jupyter-widgets/controls", "model_module_version": "1.5.0", "state": {"_dom_classes": [], "_model_module": "@jupyter-widgets/controls", "_model_module_version": "1.5.0", "_model_name": "VBoxModel", "_view_count": null, "_view_module": "@jupyter-widgets/controls", "_view_module_version": "1.5.0", "_view_name": "VBoxView", "box_style": "", "children": [], "layout": "IPY_MODEL_d5006e2ddce640249e007f94b5a10f60"}}, "8c523fa7e0a948d5b2d4f62dd996cf62": {"model_name": "LayoutModel", "model_module": "@jupyter-widgets/base", "model_module_version": "1.2.0", "state": {"_model_module": "@jupyter-widgets/base", "_model_module_version": "1.2.0", "_model_name": "LayoutModel", "_view_count": null, "_view_module": "@jupyter-widgets/base", "_view_module_version": "1.2.0", "_view_name": "LayoutView", "align_content": null, "align_items": null, "align_self": null, "border": null, "bottom": null, "display": null, "flex": null, "flex_flow": null, "grid_area": null, "grid_auto_columns": null, "grid_auto_flow": null, "grid_auto_rows": null, "grid_column": null, "grid_gap": null, "grid_row": null, "grid_template_areas": null, "grid_template_columns": null, "grid_template_rows": null, "height": null, "justify_content": null, "justify_items": null, "left": null, "margin": null, "max_height": null, "max_width": null, "min_height": null, "min_width": null, "object_fit": null, "object_position": null, "order": null, "overflow": null, "overflow_x": null, "overflow_y": null, "padding": null, "right": null, "top": null, "visibility": null, "width": null}}, "d91b64c1fc034e858ac5efb2fefe5964": {"model_name": "VBoxModel", "model_module": "@jupyter-widgets/controls", "model_module_version": "1.5.0", "state": {"_dom_classes": ["bamboolib-window"], "_model_module": "@jupyter-widgets/controls", "_model_module_version": "1.5.0", "_model_name": "VBoxModel", "_view_count": null, "_view_module": "@jupyter-widgets/controls", "_view_module_version": "1.5.0", "_view_name": "VBoxView", "box_style": "", "children": [], "layout": "IPY_MODEL_8c523fa7e0a948d5b2d4f62dd996cf62"}}, "383409d146d74ccabe5257c5c2f1250a": {"model_name": "LayoutModel", "model_module": "@jupyter-widgets/base", "model_module_version": "1.2.0", "state": {"_model_module": "@jupyter-widgets/base", "_model_module_version": "1.2.0", "_model_name": "LayoutModel", "_view_count": null, "_view_module": "@jupyter-widgets/base", "_view_module_version": "1.2.0", "_view_name": "LayoutView", "align_content": null, "align_items": null, "align_self": null, "border": null, "bottom": null, "display": null, "flex": null, "flex_flow": null, "grid_area": null, "grid_auto_columns": null, "grid_auto_flow": null, "grid_auto_rows": null, "grid_column": null, "grid_gap": null, "grid_row": null, "grid_template_areas": null, "grid_template_columns": null, "grid_template_rows": null, "height": null, "justify_content": null, "justify_items": null, "left": null, "margin": null, "max_height": null, "max_width": null, "min_height": null, "min_width": null, "object_fit": null, "object_position": null, "order": null, "overflow": null, "overflow_x": null, "overflow_y": null, "padding": null, "right": null, "top": null, "visibility": null, "width": null}}, "255ed0de35a341d0b79442eba66769c8": {"model_name": "VBoxModel", "model_module": "@jupyter-widgets/controls", "model_module_version": "1.5.0", "state": {"_dom_classes": [], "_model_module": "@jupyter-widgets/controls", "_model_module_version": "1.5.0", "_model_name": "VBoxModel", "_view_count": null, "_view_module": "@jupyter-widgets/controls", "_view_module_version": "1.5.0", "_view_name": "VBoxView", "box_style": "", "children": [], "layout": "IPY_MODEL_383409d146d74ccabe5257c5c2f1250a"}}, "f4958de18d594e059494931ef51878a3": {"model_name": "LayoutModel", "model_module": "@jupyter-widgets/base", "model_module_version": "1.2.0", "state": {"_model_module": "@jupyter-widgets/base", "_model_module_version": "1.2.0", "_model_name": "LayoutModel", "_view_count": null, "_view_module": "@jupyter-widgets/base", "_view_module_version": "1.2.0", "_view_name": "LayoutView", "align_content": null, "align_items": null, "align_self": null, "border": null, "bottom": null, "display": null, "flex": null, "flex_flow": null, "grid_area": null, "grid_auto_columns": null, "grid_auto_flow": null, "grid_auto_rows": null, "grid_column": null, "grid_gap": null, "grid_row": null, "grid_template_areas": null, "grid_template_columns": null, "grid_template_rows": null, "height": null, "justify_content": null, "justify_items": null, "left": null, "margin": null, "max_height": null, "max_width": null, "min_height": null, "min_width": null, "object_fit": null, "object_position": null, "order": null, "overflow": null, "overflow_x": null, "overflow_y": null, "padding": null, "right": null, "top": null, "visibility": null, "width": null}}, "b8f575c5582143a5980867d26d0a1a8f": {"model_name": "VBoxModel", "model_module": "@jupyter-widgets/controls", "model_module_version": "1.5.0", "state": {"_dom_classes": [], "_model_module": "@jupyter-widgets/controls", "_model_module_version": "1.5.0", "_model_name": "VBoxModel", "_view_count": null, "_view_module": "@jupyter-widgets/controls", "_view_module_version": "1.5.0", "_view_name": "VBoxView", "box_style": "", "children": [], "layout": "IPY_MODEL_f4958de18d594e059494931ef51878a3"}}, "c4cb4bdabcdc45928b51195881c1498b": {"model_name": "LayoutModel", "model_module": "@jupyter-widgets/base", "model_module_version": "1.2.0", "state": {"_model_module": "@jupyter-widgets/base", "_model_module_version": "1.2.0", "_model_name": "LayoutModel", "_view_count": null, "_view_module": "@jupyter-widgets/base", "_view_module_version": "1.2.0", "_view_name": "LayoutView", "align_content": null, "align_items": null, "align_self": null, "border": null, "bottom": null, "display": null, "flex": null, "flex_flow": null, "grid_area": null, "grid_auto_columns": null, "grid_auto_flow": null, "grid_auto_rows": null, "grid_column": null, "grid_gap": null, "grid_row": null, "grid_template_areas": null, "grid_template_columns": null, "grid_template_rows": null, "height": null, "justify_content": null, "justify_items": null, "left": null, "margin": null, "max_height": null, "max_width": null, "min_height": null, "min_width": null, "object_fit": null, "object_position": null, "order": null, "overflow": null, "overflow_x": null, "overflow_y": null, "padding": null, "right": null, "top": null, "visibility": null, "width": null}}, "51835253584a4e9ab7486a7343cd5abc": {"model_name": "VBoxModel", "model_module": "@jupyter-widgets/controls", "model_module_version": "1.5.0", "state": {"_dom_classes": [], "_model_module": "@jupyter-widgets/controls", "_model_module_version": "1.5.0", "_model_name": "VBoxModel", "_view_count": null, "_view_module": "@jupyter-widgets/controls", "_view_module_version": "1.5.0", "_view_name": "VBoxView", "box_style": "", "children": [], "layout": "IPY_MODEL_c4cb4bdabcdc45928b51195881c1498b"}}}, "version_major": 2, "version_minor": 0}
-</script>
-
 
     <script type="text/x-thebe-config">
     {
