@@ -58,7 +58,7 @@ for x in [x for x in pd.read_csv(glob.glob(f'{path_base}sm/*.csv')[0]).columns i
 df0= pd.read_csv(f"{path_base}corpus_tweets.csv", sep = ",", dtype = dic_id)
 
 
-# In[55]:
+# In[5]:
 
 
 
@@ -66,7 +66,7 @@ df0= pd.read_csv(f"{path_base}corpus_tweets.csv", sep = ",", dtype = dic_id)
 users = pd.read_csv(f'{path_base}recoded_user_sm_predicted.csv',dtype=dic_id)
 
 
-# In[56]:
+# In[6]:
 
 
 df0 = df0[['query', 'id', 'timestamp_utc', 'local_time',
@@ -75,21 +75,21 @@ df0 = df0[['query', 'id', 'timestamp_utc', 'local_time',
            'BRAF', 'MET', 'RET', 'HER2', 'date']]
 
 
-# In[57]:
+# In[7]:
 
 
 df0['date'] = pd.to_datetime(pd.to_datetime(df0['date']).dt.date)
 df0['Year'] = df0['date'].dt.year
 
 
-# In[58]:
+# In[8]:
 
 
 df=df0.merge(users,on=['user_id'], how = "inner")#how = inner by default
 df = df.loc[(df["User_status"] != "Other") & (df["User_status"] != "Undefined") & (df["Year"] >= 2012)]
 
 
-# In[59]:
+# In[9]:
 
 
 def time_series2(data, time_length, year_base):
@@ -120,7 +120,7 @@ def time_series2(data, time_length, year_base):
     return(datadate)
 
 
-# In[60]:
+# In[10]:
 
 
 time_length = "Year"
@@ -134,11 +134,11 @@ dftime = time_series2(data = df, time_length = time_length, year_base = 2018)
 # 
 # Les différents graphiques qui suivent donne un aperçu de la distribution dans le temps des rôles et des références aux différents biomarqueurs.
 
-# In[61]:
+# In[11]:
 
 
 df=df0.merge(users,on=['user_id'], how = "inner")#how = inner by default
-df = df.loc[(df["User_status"] != "Other") & (df["User_status"] != "Undefined") & (df["Year"] >= 2011)]
+df = df.loc[(df["User_status"] != "Other") & (df["User_status"] != "Undefined") & (df["Year"] >= 2012)]
 
 time_length = "Year"
 year_base = 2018
@@ -234,7 +234,7 @@ fig0.update_layout(
 fig0.show()
 
 
-# In[62]:
+# In[12]:
 
 
 def time_series(data, time_length, x, year_base):
@@ -271,8 +271,14 @@ def time_series(data, time_length, x, year_base):
         datatemp = datatemp.loc[datatemp[time_length] == year_base]
         datatemp = datatemp.drop_duplicates()
         
-        ref_value_tweet = datatemp["nb_tweets_by_group"].unique()[0]
-        ref_value_user = datatemp["nb_user_by_group"].unique()[0]
+        #print(len(datatemp))
+        if len(datatemp) == 1:
+            ref_value_tweet = datatemp["nb_tweets_by_group"].unique()[0]
+            ref_value_user = datatemp["nb_user_by_group"].unique()[0]
+        else:
+            ref_value_tweet = 0
+            ref_value_user = 0
+        #print(ref_value_tweet, ref_value_user)
 
         list_year.append(first_year)
         list_role.append(n)
@@ -301,7 +307,7 @@ def time_series(data, time_length, x, year_base):
 # 
 # L'analyse de la distribution des rôles montre la présence croissante des professionnels, en particulier des oncologues (*oncologists*) et, dans une moindre mesure, des chercheurs.
 
-# In[63]:
+# In[13]:
 
 
 time_length = "Year"
@@ -313,7 +319,7 @@ dftime = time_series(data = df, time_length = time_length, x = x, year_base= 201
 dftime = time_series2(data = df, time_length = time_length, year_base= 2018)
 
 
-# In[64]:
+# In[14]:
 
 
 dftime = time_series2(data = df, time_length = time_length, year_base= 2018)
@@ -360,7 +366,7 @@ data = {"role" : list_role,
 evol_global_tweets = pd.DataFrame(data)
 
 
-# In[65]:
+# In[15]:
 
 
 dftime = time_series(data = df, time_length = time_length, x = x, year_base= 2018)
@@ -423,7 +429,7 @@ evol_global_tweets2_style
 
 # Le tableau ci-dessus montre que le nombre de tweets a été multiplié en moyenne par 1,21 chaque année entre 2011 et 2021. Cette croissance s'observe principalement sur la période 2011-2017. On observe ensuite un diminution progressive sur la période 2018-2021. Au cours de cette seconde période, la baisse la plus importante concerne les tweets publiés par les "Advocacy Patients" : le nombre de tweets en 2021 est divisé par deux par rapport à 2018 et a été divisé par 1,25 en moyenne les trois dernière années. À l'inverse la plus forte croissance est observée parmi les médias, dont le nombre de tweets a été multiplié par 1,12 en moyenne chaque année.
 
-# In[66]:
+# In[16]:
 
 
 dftime = time_series2(data = df, time_length = time_length, year_base= 2018)
@@ -470,7 +476,7 @@ data = {"role" : list_role,
 evol_global_users = pd.DataFrame(data)
 
 
-# In[67]:
+# In[17]:
 
 
 dftime = time_series(data = df, time_length = time_length, x = x, year_base= 2018)
@@ -541,11 +547,13 @@ evol_global_users2_style
 
 # Les diagrammes ci-dessous représentent l'évolution du nombre de compte et de tweets publiés en fonction des différents recodages effectués.
 
-# In[100]:
+# In[18]:
 
 
 df=df0.merge(users,on=['user_id'], how = "inner")#how = inner by default
-df = df.loc[(df["User_status"] != "Other") & (df["User_status"] != "Undefined") & (df["Year"] >= 2011)]
+df = df.loc[(df["User_status"] != "Other") & 
+            (df["User_status"] != "Undefined") & 
+            (df["Year"] >= 2012)]
 
 
 #df1 = time_series(data = df, time_length = time_length, x = x, year_base = 2016)
@@ -646,9 +654,21 @@ fig.update_layout(
 fig.show()
 
 
-# In[ ]:
+# In[19]:
 
 
+
+df=df0.merge(users,on=['user_id'], how = "inner")#how = inner by default
+df = df.loc[(df["User_status"] != "Other") & 
+            (df["User_status"] != "Undefined") & 
+            (df["Year"] >= 2012)]
+
+
+#df1 = time_series(data = df, time_length = time_length, x = x, year_base = 2016)
+
+variable = ["User_role3", "User_status", "User_status2", "User_status3"]
+list_of_compute = ['nb_tweets_by_group','nb_user_by_group', 'prop_tweets', 'prop_users', #'average_publication',
+       'base_100_tweets', 'base_100_users']
 
 
 
@@ -664,7 +684,7 @@ fig1 = make_subplots(rows=1, cols=1,
 df1 = time_series(data = df, time_length = time_length, x = role_variable, year_base = 2018)
 for z, col in enumerate(list_of_compute):
     for i, n in enumerate(df1[role_variable].unique()):
-        if col == "prop_tweets" or col == "prop_users" or col ==  "nb_tweets_by_group":
+        if col == "prop_tweets" or col == "prop_users"  or col ==  "nb_tweets_by_group":
             fig1.append_trace(
                 go.Scatter(
                     x= df1[time_length].loc[(df1[role_variable]==n)],
@@ -740,7 +760,7 @@ fig1.update_layout(
 fig1.show()
 
 
-# In[ ]:
+# In[20]:
 
 
 
@@ -832,7 +852,7 @@ fig2.update_layout(
 fig2.show()
 
 
-# In[ ]:
+# In[21]:
 
 
 
@@ -924,13 +944,13 @@ fig3.update_layout(
 fig3.show()
 
 
-# In[ ]:
+# In[22]:
 
 
 #sns.lineplot(x = 'Year', y = "prop", data = dftime, hue = x)
 
 
-# In[ ]:
+# In[23]:
 
 
 import seaborn as sns
@@ -944,7 +964,7 @@ g.fig.subplots_adjust(top=0.9) # adjust the Figure in rp
 g.fig.suptitle('Evolution du nombre de tweets par statuts et par an (base 100 en 2018)')
 
 
-# In[ ]:
+# In[24]:
 
 
 df=df0.merge(users,on=['user_id'], how = "inner")#how = inner by default
@@ -953,7 +973,7 @@ df = df.loc[(df["User_status"] != "Other") & (df["User_status"] != "Undefined") 
 df["somme_biom"] = df['ROS1'] +df['ALK']+df['EXON']+df['EGFR']+df['KRAS']+df['NTRK']+df['BRAF']+df["MET"]+df['RET']+df["HER2"]
 
 
-# In[ ]:
+# In[25]:
 
 
 def time_series3(data, time_length, year_base):
@@ -969,7 +989,7 @@ def time_series3(data, time_length, year_base):
     return(datadate)
 
 
-# In[ ]:
+# In[26]:
 
 
 def time_series4(data, time_length, year_base, bio):
@@ -996,14 +1016,14 @@ def time_series4(data, time_length, year_base, bio):
     
 
 
-# In[ ]:
+# In[27]:
 
 
-
+df_stat = df.loc[df["User_status"] == "Advocacy Patients"]
 df_biom = time_series3(data = df, time_length = "Year", year_base = 2018)
 
 
-# In[ ]:
+# In[28]:
 
 
 time_length = "Year"
@@ -1096,10 +1116,11 @@ fig01.update_layout(
 fig01.show()
 
 
-# In[ ]:
+# In[29]:
 
 
 biom=['ROS1', 'ALK','EXON', 'EGFR','KRAS','NTRK','BRAF',"MET",'RET',"HER2"]#
+
 
 for i,bio in enumerate(biom):
     df_tmp = time_series4(data = df, time_length = "Year", year_base = 2018, bio = bio)
@@ -1112,7 +1133,7 @@ for i,bio in enumerate(biom):
         biomm=pd.concat([biomm,df_tmp])
 
 
-# In[ ]:
+# In[30]:
 
 
 list_of_compute = ['nb_mentionned_biom', 'prop_of_biom', #'average_publication',
@@ -1204,7 +1225,7 @@ fig4.update_layout(
 fig4.show()
 
 
-# In[ ]:
+# In[31]:
 
 
 
@@ -1216,7 +1237,7 @@ g.fig.subplots_adjust(top=0.9) # adjust the Figure in rp
 g.fig.suptitle('Evolution annuelle du nombre de tweets mentionnant chacun des biomarqueurs')
 
 
-# In[ ]:
+# In[32]:
 
 
 df['month_year'] = df['date'].dt.to_period('M')
@@ -1233,7 +1254,7 @@ for i,bio in enumerate(biom):
         biomm=pd.concat([biomm,df_tmp])
 
 
-# In[ ]:
+# In[33]:
 
 
 biomm["month"] = biomm["month_year"].dt.strftime('%Y-%m')
@@ -1329,7 +1350,7 @@ fig5.update_layout(
 fig5.show()
 
 
-# In[ ]:
+# In[34]:
 
 
 biom=['ROS1', 'ALK','EXON', 'EGFR','KRAS','NTRK','BRAF',"MET",'RET',"HER2"]#
@@ -1379,7 +1400,7 @@ data = {"Biomarqueurs" : list_bio,
 evol_global_mentions = pd.DataFrame(data)
 
 
-# In[ ]:
+# In[35]:
 
 
 biom=['ROS1', 'ALK','EXON', 'EGFR','KRAS','NTRK','BRAF',"MET",'RET',"HER2"]#
@@ -1449,7 +1470,7 @@ evol_global_mentions2_style
 # 
 # Toutefois, les biomarqueurs ne connaissent pas la même évolution. On remarque par exemple que le nombre de tweets faisant au moins une référence au biomarqueur KRAS double en moyenne chaque année entre 2018 et 2021, tandis que les références au biomarqueur ROS1 ont diminué annuellement de 30% en moyenne. La forte croissance du biomarqueur EGFR doit par contre être interprétée avec précaution. Comme l'indique les graphiques ci-dessus, la croissance la plus forte se situe entre l'année 2012 et 2013 et est liée au très faible nombre de mentions en 2012 (seulement 2).
 
-# In[101]:
+# In[36]:
 
 
 biom=['ROS1', 'ALK','EXON', 'EGFR','KRAS','NTRK','BRAF',"MET",'RET',"HER2"]#
@@ -1502,7 +1523,7 @@ data = {"Biomarqueurs" : list_bio,
 evol_global_mentions = pd.DataFrame(data)
 
 
-# In[ ]:
+# In[37]:
 
 
 biom=['ROS1', 'ALK','EXON', 'EGFR','KRAS','NTRK','BRAF',"MET",'RET',"HER2"]#
@@ -1567,243 +1588,4 @@ evol_mensuelle_mentions2_style = evol_global_mentions2.style.format(precision=2,
  }], overwrite=False)
 
 evol_mensuelle_mentions2_style
-
-
-# ## Qui parle de quel marqueur ?
-# 
-# Enfin, la matrice ci-après indique la part occupée par les différents biomarqueurs dans les tweets qui en mentionnent au moins un en fonction du statut de leurs auteurs. Par exemple, 30% des 2548 biomarqueurs cités par les "défenseurs de cause" (*advocacy*) concernent le marqueur EGFR. 
-
-# In[102]:
-
-
-df_status = df[["User_status", "id", 'ROS1', 'ALK', 'EXON', 'EGFR', 'KRAS', 'NTRK', 'BRAF', 'MET', 'RET', 'HER2']]
-df_tmp = df_status.loc[df_status["ALK"]==1].groupby(["User_status", "ALK"]).agg(ALK_c = ("id", "count"))
-
-
-# In[103]:
-
-
-biom = ['ROS1', 'ALK', 'EXON', 'EGFR', 'KRAS', 'NTRK', 'BRAF', 'MET', 'RET', 'HER2']
-variable = "User_status"
-df_status = df[[variable, "id", 'ROS1', 'ALK', 'EXON', 'EGFR', 'KRAS', 'NTRK', 'BRAF', 'MET', 'RET', 'HER2']]
-
-
-for i, bio in enumerate(biom):
-    df_tmp = df_status.loc[df_status[bio]==1].groupby([variable, bio]).agg(bio = ("id", "count")).reset_index()
-    df_tmp = df_tmp[[variable,"bio"]].rename(columns = {"bio": bio})
-    
-    if i==0:
-        pivot_table = df_tmp
-    else:
-        pivot_table = pivot_table.merge(df_tmp, how = "left", on = [variable]) 
-
-pivot_table["somme_ligne"] = pivot_table[biom].sum(axis=1)
-pivot_table.loc['Column_Total']= pivot_table.sum(numeric_only=True, axis=0)
-pivot_table = pivot_table.fillna("Total")
-
-df_tmp = pivot_table.copy()
-biom.append("somme_ligne")
-for i, status in enumerate(pivot_table[variable]):
-    for i, bio in enumerate(biom):
-        df_tmp[bio] = pivot_table[bio]/pivot_table["somme_ligne"]*100
-    
-pivot_table = df_tmp[[variable, 'ROS1', 'ALK', 'EXON', 'EGFR', 'KRAS', 'NTRK', 'BRAF', 'MET', 'RET', 'HER2']]
-pivot_table.index = pivot_table[variable]
-pivot_table = pivot_table.drop(columns = [variable])
-
-
-# In[104]:
-
-
-biom = ['ROS1', 'ALK', 'EXON', 'EGFR', 'KRAS', 'NTRK', 'BRAF', 'MET', 'RET', 'HER2']
-variable = "User_status"
-df_status = df[[variable, "id", 'ROS1', 'ALK', 'EXON', 'EGFR', 'KRAS', 'NTRK', 'BRAF', 'MET', 'RET', 'HER2']]
-
-
-for i, bio in enumerate(biom):
-    df_tmp = df_status.loc[df_status[bio]==1].groupby([variable, bio]).agg(bio = ("id", "count")).reset_index()
-    df_tmp = df_tmp[[variable,"bio"]].rename(columns = {"bio": bio})
-    
-    if i==0:
-        pivot_table1 = df_tmp
-    else:
-        pivot_table1 = pivot_table1.merge(df_tmp, how = "left", on = [variable]) 
-
-pivot_table1["somme_ligne"] = pivot_table1[biom].sum(axis=1)
-
-
-df_tmp = pivot_table1.copy()
-biom.append("somme_ligne")
-for i, status in enumerate(pivot_table1[variable]):
-    for i, bio in enumerate(biom):
-        df_tmp[bio] = pivot_table1[bio]#/pivot_table["somme_ligne"]*100
-    
-pivot_table1 = df_tmp[[variable, 'ROS1', 'ALK', 'EXON', 'EGFR', 'KRAS', 'NTRK', 'BRAF', 'MET', 'RET', 'HER2', 'somme_ligne']]
-pivot_table1.index = pivot_table1[variable]
-pivot_table1 = pivot_table1.drop(columns = [variable])
-pivot_table1.loc['Column_Total']= pivot_table1.sum(numeric_only=True, axis=0)
-
-pivot_table1_style = pivot_table1.style.format(precision=0, na_rep='').set_caption("Les nombre de références aux biomarqueurs en fonction du statut des auteurs") .set_table_styles([{
-     'selector': 'caption',
-     'props': 'caption-side: top ; color: black ; font-size : 14pt'
- }], overwrite=False)
-
-pivot_table1_style
-
-
-# In[105]:
-
-
-fig = px.imshow(pivot_table,color_continuous_scale='reds', title = "Proportion des références aux différents biomarqueurs en fonction du statut des auteurs")
-fig.show()
-
-
-# In[106]:
-
-
-
-
-fig = plt.figure(num=None, figsize=(20, 10), dpi=80, facecolor='w', edgecolor='k')
-
-cpalette = sns.color_palette("GnBu_d")
-res = sns.heatmap(pivot_table, annot=True, linewidths=.5, fmt='.2f',  cmap="Reds")
-
-for t in res.texts: t.set_text(t.get_text() + " %")
-#plt.savefig('biomarkers_dist.pdf')
-res.set(title ="Proportion des références aux biomarqueurs en fonction du statut des auteurs (% en ligne)")
-
-
-# In[107]:
-
-
-biom = ['ROS1', 'ALK', 'EXON', 'EGFR', 'KRAS', 'NTRK', 'BRAF', 'MET', 'RET', 'HER2']
-variable = "User_status"
-df_status = df[[variable, "id", 'ROS1', 'ALK', 'EXON', 'EGFR', 'KRAS', 'NTRK', 'BRAF', 'MET', 'RET', 'HER2']]
-
-
-for i, bio in enumerate(biom):
-    df_tmp = df_status.loc[df_status[bio]==1].groupby([variable, bio]).agg(bio = ("id", "count")).reset_index()
-    df_tmp = df_tmp[[variable,"bio"]].rename(columns = {"bio": bio})
-    
-    if i==0:
-        pivot_table = df_tmp
-    else:
-        pivot_table = pivot_table.merge(df_tmp, how = "left", on = [variable]) 
-
-pivot_table["Row_Total"] = pivot_table[biom].sum(axis=1)
-pivot_table.loc['Column_Total']= pivot_table.sum(numeric_only=True, axis=0)
-pivot_table = pivot_table.fillna("Total")
-
-df_tmp = pivot_table.copy()
-
-df_tmp.index = df_tmp[variable]
-df_tmp = df_tmp.drop(columns = [variable])
-
-pivot_table = pd.DataFrame.transpose(df_tmp).reset_index()
-pivot_table
-df_tmp = pivot_table.copy()
-
-for i, status in enumerate(pivot_table["index"]):
-    for i, bio in enumerate(pivot_table.columns[1:]):
-        df_tmp[bio] = pivot_table[bio]/pivot_table["Total"]*100
-
-pivot_table = df_tmp.drop(columns = ["Total"])
-pivot_table.index = pivot_table["index"]
-pivot_table = pivot_table.drop(columns = ["index"])
-
-pivot_table2 = pivot_table.transpose()
-
-
-# In[108]:
-
-
-fig = px.imshow(pivot_table2,color_continuous_scale='reds', title = "Part des statuts en fonction des références aux différents biomarqueurs (% en colonne)")
-fig.show()
-
-
-# In[109]:
-
-
-
-
-fig = plt.figure(num=None, figsize=(20, 15), dpi=80, facecolor='w', edgecolor='k')
-
-cpalette = sns.color_palette("GnBu_d")
-res = sns.heatmap(pivot_table2, annot=True, linewidths=.5, fmt='.2f',  cmap="Reds")
-
-for t in res.texts: t.set_text(t.get_text() + " %")
-#plt.savefig('biomarkers_dist.pdf')
-res.set(title ="Part des statuts en fonction des références aux différents biomarqueurs (% en colonne)")
-
-
-# 
-# ```{note}
-# Lecture de la matrice : 40% des références au biomarqueur MET sont le fait des oncologues, tandis que 27% des références au biomarqueur ALK proviennent des "Advocacy patiens".
-# ```
-# 
-
-# In[110]:
-
-
-pivot_table1 = pivot_table1.reset_index()
-
-
-# In[111]:
-
-
-biom = ['ROS1', 'ALK', 'EXON', 'EGFR', 'KRAS', 'NTRK', 'BRAF', 'MET', 'RET', 'HER2']
-list_status = []
-#col = biom.append("User_status")
-#dft = pd.DataFrame(columns = [biom])
-dict_score = {}
-
-for bio in biom:
-    list_score = []
-    for i, x in enumerate(pivot_table1[bio]):
-        n = pivot_table1["somme_ligne"].iloc[i]
-        m = pivot_table1[bio].iloc[-1]
-        total = pivot_table1["somme_ligne"].iloc[-1]
-        a = x
-        b = n-x
-        c= m-x
-        d = (total-n)-(c)
-        #print(a, b, c, d, n, m, total)
-        phi_score = ((a*d)-(b*c)) / np.sqrt(n*m*(total-n)*(total-m))
-        chi_square_value = total*np.square(phi_score)
-        normalised_score = x/(n*m)
-        #print(phi_score, chi_square_value)
-        list_score.append(phi_score)
-        #if chi_square_value > 6.6349:
-        #    list_score.append(phi_score)
-        #else:
-        #    list_score.append(np.nan)
-        dict_score[bio] = list_score
-
-for x in pivot_table1["User_status"]:
-        list_status.append(x)
-        dict_score["User_status"] = list_status
-
-
-# In[112]:
-
-
-dft = pd.DataFrame(dict_score)
-dft.index = dft ["User_status"]
-dft = dft.drop(columns=["User_status"])
-dft = dft.drop(labels=["Column_Total"])
-
-
-# In[113]:
-
-
-fig = px.imshow(dft,color_continuous_scale='Balance', title = "Corrélation entre biomarqueurs et statuts (coefficient de Phi)")
-fig.show()
-
-#fig.savefig('relation_biomarqueurs_status.png')
-
-
-# In[ ]:
-
-
-
 

@@ -7,5 +7,6 @@ chapters:
 - file: read_sm
 - file: regroupement_categorie
 - file: analyse_preleminaire
-- file: desaisonnalisation
+- file: incidence_matrix
+- file: analyse_bivarie2
 - file: dynamic_network

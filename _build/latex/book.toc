@@ -1,9 +1,0 @@
-\selectlanguage *{english}
-\contentsline {section}{\numberline {0.1}Détection des biomarqueurs dans les tweets}{1}{section.0.1}%
-\contentsline {subsection}{\numberline {0.1.1}Méthode initiale}{1}{subsection.0.1.1}%
-\contentsline {subsection}{\numberline {0.1.2}Définition d’expressions régulières plus complexes}{1}{subsection.0.1.2}%
-\contentsline {section}{\numberline {0.2}Regroupement des rôles}{2}{section.0.2}%
-\contentsline {section}{\numberline {0.3}Quelques graphiques}{4}{section.0.3}%
-\contentsline {subsection}{\numberline {0.3.1}Des professionnels de plus en plus présents}{4}{subsection.0.3.1}%
-\contentsline {subsection}{\numberline {0.3.2}La dynamique des biomarqueurs}{5}{subsection.0.3.2}%
-\contentsline {subsection}{\numberline {0.3.3}Qui parle de quel marqueur ?}{5}{subsection.0.3.3}%
