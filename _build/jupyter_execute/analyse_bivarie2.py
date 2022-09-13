@@ -91,9 +91,9 @@ df = df.loc[(df["User_status"] != "Other") & (df["User_status"] != "Undefined") 
 
 # # Le rôle des différents groupes dans la publicisation des biomarqueurs
 # 
-# Les graphiques ci-dessous visent à compléter l'analyse présentée à la page précédente en regardant pour chaque biomarqueur la place occupée par les différentes catégories d'acteurs dans sa diffusion. Cette diffusion est appréhendée à travers le nombre de tweets mentionnant au moins une fois un biomarqueur. 
+# Les graphiques ci-dessous visent à compléter les analyses présentées dans les pages précédentes en ajoutant une dimension temporelle aux relations entre catégories d'acteurs et biomarqueurs. Il s'agit de cette manière de saisir le rôle de ces différents acteurs dans la diffusion de chacun des biomarqueurs à travers le nombre de tweets qu'ils publient.
 # 
-# Outre les valeurs absolues, plusieurs procédure de normalisation ont été appliquée. La première, toute simple, consiste à calculer pour chaque année la proportion de tweets contenant le biomarqueur *x* publiée par chacune des catégories sur l'ensemble des tweets contenant ce biomarqueur. 
+# Outre les valeurs absolues, plusieurs procédures de normalisation ont été appliquées. La première, toute simple, consiste à calculer pour chaque année la proportion de tweets contenant le biomarqueur *x* publiée par chacune des catégories sur l'ensemble des tweets contenant ce biomarqueur. 
 # 
 # La deuxième donne la proportion de tweets contenant le biomarqueur *x* publiés par une catégorie sur l'ensemble des tweets de cette catégorie.
 # 
@@ -238,7 +238,7 @@ year_base = 2018
 variable = ["User_role3", "User_status", "User_status2", "User_status3"]
 list_of_compute = [# 'nb_user_by_group', 
     'nb_tweets_by_group', 'nb_user_by_group',
-    "prop_tweets", "prop_users",
+    "prop_tweets", "prop_users",'tx_var_tweets',
     "base_100_tweets", "base_100_users"# "base_100_tweets_corrigee"#'average_publication',
        ]
 
@@ -393,7 +393,7 @@ list_of_compute = [# 'nb_user_by_group',
     'nb_tweets_by_group_biom', 'nb_user_by_group_biom',
     "prop_tweets_biom_by_group", "prop_users_biom_by_group",
     'prop_tweets_biom_in_group', 'prop_users_biom_in_group',
-    "prop_tweets_on_biom_by_group", "prop_users_on_biom_by_group",
+    "prop_tweets_on_biom_by_group", "prop_users_on_biom_by_group", 'CM_tweets', 'CM_users',
     'base_100_tweets_biom', 'base_100_users_biom' # "base_100_tweets_corrigee"#'average_publication',
        ]
 
@@ -498,12 +498,9 @@ fig1.update_layout(
 fig1.show()
 
 
-# Dans le cas du biomarqueur ALK par exemple, 23 advocacy patients ont publiés en 2018 plus de 1000 tweets y faisant référence. Ils représentent ainsi 14% des comptes ayant parlés au moins une fois de ALK et sont à l'origine de 52% des tweets sur ce biomarqueur en 2018. Cette même année, 58 oncologues ont twitté 220 messages sur le même biomarqueur. Ils représentaient donc 36% des comptes publiant sur ALK en 2018, mais n'ont été à l'origine que de 11% des tweets.
+# Par exemple, 23 advocacy patients ont publiés en 2018 plus de 1000 tweets faisant référence à ALK. Ils représentent ainsi 14% des comptes ayant parlés au moins une fois de ALK et sont à l'origine de 52% des tweets sur ce biomarqueur en 2018. Cette même année, 58 oncologues ont twitté 220 messages sur le même biomarqueur. Ils représentaient donc 36% des comptes publiant sur ALK en 2018, mais n'ont été à l'origine que de 11% des tweets. Ramené au nombre total de tweets publiés par ces deux catégories, on constate qu'en 2018 moins de 1% des tweets des oncologues contenaient une référence à ALK, contre 5% pour les advocacy patients. En termes de compte, 10% des oncologues et 17% des advocacy patients ont publié au moins un tweet parlant de ALK. Enfin, 67% des tweets mentionnant un biomarqueur publié par les advocacy patients en 2018 concernent ALK. La proportion des oncologues  passe quant à elle à 19%.
 # 
-# Ramené au nombre total de tweets publiés par ces deux catégories, on constate qu'en 2018 moins de 1% des tweets des oncologues contenaient une référence à ALK, contre 5% pour les advocacy patients. En termes de compte, 10% des oncologues et 17% des advocacy patients ont publié au moins un tweet parlant de ALK.
-# 
-# Enfin, 67% des tweets mentionnant un biomarqueur publié par les advocacy patients en 2018 concernent ALK. Dans le cas des oncologues cette proportion passe à 19%.
-# 
+# Dans le cas des advocacy patients, c'est justement en 2018 que l'attention portée à ALK atteint son maximum. Le nombre de tweets mentionnant ce biomarqueur est multipliés par 15 entre 2017 et 2018, pandis que le nombre d'utilisateurs à l'origine de ces messages est multiplié par 2 : on dénombre 10 comptes d'advocacy patients en 2017 et 23 en 2018. On constate en revanche que le nombre de tweets publiés par des oncologues mentionnant ALK continue de progresser jusqu'en 2019. Le nombre de tweets décroit à partir de 2020 et atteint en 2021 un volume inférieur à celui de 2018. Il est intéressant de noter que la croissance du nombre d'oncologues publiant des tweets sur ALK ralentit dès 2017, là où l'augmentation des tweets eux-mêmes s'essoufle à partir de 2018.
 # 
 
 # In[14]:
@@ -606,6 +603,8 @@ fig1.update_layout(
 fig1.show()
 
 
+# Si ROS1 semble lui-aussi être un biomarqueur fortement investi par les advocacy patients, sa dynamique présente quelques différences par rapport à ALK, notamment si on compare les tweets des advocacy patients avec ceux des oncologues. On observe toujours une première phase de latence où les volumes de tweets publiés par ces deux catégories d'acteurs sont proches. Jusqu'en 2016, le plus gros écart observé est en 2015 où on compte 39 tweets faisant référence à ROS1 postés par quatre oncologues pour 19 tweets envoyés par deux advocacy patients.On observe ensuite un décalage. La mobilisation des advocacy patients s'intensifient à partir de 2017, là où celle des oncologues s'accroit à partir de 2018. Elles atteignent toutes les deux leurs acmées en 2019. Si l'engagement des oncologues reste relativement en retrait, elle semble suivre malgré tout la mobilisation des advocacy patients au contraire de ALK.
+
 # In[15]:
 
 
@@ -705,6 +704,10 @@ fig1.update_layout(
 
 fig1.show()
 
+
+# HER2 a également un profil intéressant. On a vu que les médias ont un lien particulier avec ce marqueur. Depuis, 2016, ils sont à l'origine de plus d'un tiers des tweets y faisant référence. Entre 2016 et 2021, les tweets sur HER2 ont représenté entre 50 et 40% de tous les messages publiés par des médias contenant un biomarqueur. À titre de comparaison, le taux des tweets concernant ALK sur l'ensemble des tweets des médias contenant un biomarqueur varient entre 20 et 5% sur cette même période. Les organisations non-lucratives (NPO) ont aussi contribué à la publicisation de HER2. Bien qu'en 2021, les NPO n'occupent que le troisième rang volume de tweets, derrière les médias et les oncologues, elles passent premières une fois ce volume ramenée à l'ensemble des tweets publiées par les NPO : sur 9627 tweets publiés en 2021, 351 contenaient le terme "HER2" (soit 3,6%).
+# 
+# En revanche, HER2 n'est pas le biomarqueur sur lequel les advocacy patients se sont mobilisés le plus. Mis à part en 2015 où 46%  des tweets sur HER2 ont été publiés par des advocacy patients, leur "contribution" n'a pas dépassé les 10%. On notera également que les messages sur HER2 représentent au mieux 1,4% de l'ensemble des tweets publiés par les advocacy patients. En 2021, ils ont été à l'origine de 2% des tweets évoquant HER2. Un volume de tweets qui représentait cette année-là (2021) 0,5% de l'ensemble de leur publication.
 
 # In[16]:
 
@@ -1559,4 +1562,183 @@ fig4.update_layout(
 
 
 fig4.show()
+
+
+# In[27]:
+
+
+df=df0.merge(users,on=['user_id'], how = "inner")#how = inner by default
+df = df.loc[(df["User_status"] != "Other") & (df["User_status"] != "Undefined") & (df["Year"] >= 2012)]
+df = df.sort_values(["Year"])
+variable = "User_status"
+
+for annee in df["Year"].unique():
+    biom = ['ROS1', 'ALK', 'EXON', 'EGFR', 'KRAS', 'NTRK', 'BRAF', 'MET', 'RET', 'HER2']
+    dfy = df.loc[df["Year"] == annee]
+    df_status = dfy[[variable, "Year", "id", 'ROS1', 'ALK', 'EXON', 'EGFR', 'KRAS', 'NTRK', 'BRAF', 'MET', 'RET', 'HER2']]
+
+
+
+    for i, bio in enumerate(biom):
+        df_tmp = df_status.loc[df_status[bio]==1].groupby([variable, bio]).agg(bio = ("id", "count")).reset_index()
+        df_tmp = df_tmp[[variable,"bio"]].rename(columns = {"bio": bio})
+
+        if i==0:
+            pivot_table1 = df_tmp
+        else:
+            pivot_table1 = pivot_table1.merge(df_tmp, how = "left", on = [variable]) 
+
+    pivot_table1["somme_ligne"] = pivot_table1[biom].sum(axis=1)
+
+
+    df_tmp = pivot_table1.copy()
+    biom.append("somme_ligne")
+    for i, status in enumerate(pivot_table1[variable]):
+        for i, bio in enumerate(biom):
+            df_tmp[bio] = pivot_table1[bio]#/pivot_table["somme_ligne"]*100
+
+    pivot_table1 = df_tmp[[variable, 'ROS1', 'ALK', 'EXON', 'EGFR', 'KRAS', 'NTRK', 'BRAF', 'MET', 'RET', 'HER2', 'somme_ligne']]
+    pivot_table1.index = pivot_table1[variable]
+    pivot_table1 = pivot_table1.drop(columns = [variable])
+    pivot_table1.loc['Column_Total']= pivot_table1.sum(numeric_only=True, axis=0)
+    pivot_table1 = pivot_table1.fillna(0)
+    
+    list_status = []
+    pivot_table1 = pivot_table1.reset_index()
+    #col = biom.append("User_status")
+    #dft = pd.DataFrame(columns = [biom])
+    dict_score = {}
+    
+    biom = ['ROS1', 'ALK', 'EXON', 'EGFR', 'KRAS', 'NTRK', 'BRAF', 'MET', 'RET', 'HER2']
+    
+    
+    for bio in biom:
+        list_score = []
+        for i, x in enumerate(pivot_table1[bio]):
+            n = pivot_table1["somme_ligne"].iloc[i]
+            m = pivot_table1[bio].iloc[-1]
+            total = pivot_table1["somme_ligne"].iloc[-1]
+            a = x
+            b = n-x
+            c= m-x
+            d = (total-n)-(c)
+            numerateur = (a*d)-(b*c)
+            denominateur = np.sqrt(n*m*(total-n)*(total-m))
+            np.seterr(divide='ignore', invalid='ignore')
+            phi_score = np.divide(numerateur, denominateur)
+            #phi_score2 = ((a)) / np.sqrt(n*m)
+            chi_square_value = total*np.square(phi_score)
+            normalised_score = x/(n*m)
+
+            if chi_square_value > 6.6349:
+                list_score.append(phi_score)
+            else:
+                list_score.append(np.nan)
+
+            dict_score[bio] = list_score
+
+    
+    for x in pivot_table1["User_status"]:
+        list_status.append(x)
+        dict_score["User_status"] = list_status
+    
+    dft = pd.DataFrame(dict_score)
+    dft.index = dft ["User_status"]
+    dft = dft.drop(columns=["User_status"])
+    dft = dft.drop(labels=["Column_Total"])
+    dft["Year"] = annee
+    
+    if a ==0:
+        dft1 = dft.copy()
+    else:
+        dft1= pd.concat([dft1, dft], axis = 0)
+
+
+
+role_variable = "User_status"
+dft1 = dft1.reset_index().sort_values([role_variable, "Year"])
+
+biom = ['ALK', 'ROS1' , 'HER2', 'EGFR', 'EXON', 'KRAS', 'NTRK', 'BRAF', 'MET', 'RET', 'EXON']
+
+fig1 = make_subplots(rows=1, cols=1,
+                    shared_xaxes=True,
+                    vertical_spacing=0.02)
+
+#for j, v in enumerate(variable):
+for z, col in enumerate(biom):
+    for i, n in enumerate(dft1[role_variable].unique()):
+        fig1.append_trace(
+        go.Scatter(
+            x= dft1["Year"].loc[(dft1[role_variable]==n)],
+            y= dft1[col].loc[(dft1[role_variable]== n)],
+            name = n,
+            meta= [col]),
+        1,1)
+
+#
+Ld=len(fig1.data)
+Lc =len(dft1.columns[0:9])
+
+
+
+#print(fig)
+for k in range(0, Ld):
+    #print(fig.data[k].meta[0])
+    #print(role_variable)
+
+    if "ROS1" in fig1.data[k].meta[0]:
+        fig1.update_traces(visible=True, selector = k)
+    else:
+        fig1.update_traces(visible=False, selector = k)
+
+
+
+def create_layout_button(k, customer):
+
+    list_to_display = []
+
+    for i, trace in enumerate(fig1.data):
+        #print(fig.data[i].meta[1])
+        if customer == fig1.data[i].meta[0] :
+            list_to_display.append(True)
+        else:
+            list_to_display.append(False)
+    return dict(label = customer,
+                method = 'update',
+                args = [{'visible': list_to_display,
+                         'title': customer,
+                         'showlegend': True}])
+
+
+
+fig1.update_layout(
+    title= f"Evolution des relations entre catégories d'acteurs et biomarqueurs (coefficient de phi)",
+    updatemenus=[
+        go.layout.Updatemenu(
+            active = 0,
+            buttons = [create_layout_button(k, customer) for k, customer in enumerate(biom)],
+            x= 1.2,
+            y= 1.8
+        ),
+
+    ]
+)
+
+
+#print(fig.layout.updatemenus)
+
+
+
+
+fig1.show()
+
+    
+
+
+# Le dernier diagramme ci-dessus rend compte de l'évolution des relations mesurées à l'aide du coefficient de *Phi* (voir page précédente) entre catégories d'acteurs et biomarqueurs. Comme pour la heatmap affiché sur la page précédente, seuls les coefficients de *Phi* significatifs (seuil à 0,01) sont dessinés, ce qui explique les points isolés. On espère grâce à ce diagramme donné une vision plus synthétique des dynamiques entre catégories d'acteurs et biomarqueurs. Si on prend HER2 décrit plus haut, on observe une relation significativement positive entre les médias et ce marqueur depuis 2016. Au contraire, depuis 2017, cette relation est plutôt négative dans le cas des advocacy patients. Il est également de s'arrêter sur les oncologues qui, jusqu'en 2017, semblent peu mobilisés sur HER2.
+
+# In[ ]:
+
+
+
 

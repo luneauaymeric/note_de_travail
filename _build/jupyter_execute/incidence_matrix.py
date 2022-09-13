@@ -371,3 +371,184 @@ res = sns.heatmap(dft, annot=True, linewidths=.5, fmt='.2f',  cmap="RdBu_r")
 #plt.savefig('biomarkers_dist.pdf')
 res.set(title ="Corrélation entre biomarqueurs et statuts (coefficient de Phi)")
 
+
+# In[21]:
+
+
+
+
+
+# In[21]:
+
+
+df=df0.merge(users,on=['user_id'], how = "inner")#how = inner by default
+df = df.loc[(df["User_status"] != "Other") & (df["User_status"] != "Undefined") & (df["Year"] >= 2012)]
+df = df.sort_values("Year")
+variable = "User_status"
+
+for annee in df["Year"].unique():
+    biom = ['ROS1', 'ALK', 'EXON', 'EGFR', 'KRAS', 'NTRK', 'BRAF', 'MET', 'RET', 'HER2']
+    dfy = df.loc[df["Year"] == annee]
+    df_status = dfy[[variable, "Year", "id", 'ROS1', 'ALK', 'EXON', 'EGFR', 'KRAS', 'NTRK', 'BRAF', 'MET', 'RET', 'HER2']]
+
+
+
+    for i, bio in enumerate(biom):
+        df_tmp = df_status.loc[df_status[bio]==1].groupby([variable, bio]).agg(bio = ("id", "count")).reset_index()
+        df_tmp = df_tmp[[variable,"bio"]].rename(columns = {"bio": bio})
+
+        if i==0:
+            pivot_table1 = df_tmp
+        else:
+            pivot_table1 = pivot_table1.merge(df_tmp, how = "left", on = [variable]) 
+
+    pivot_table1["somme_ligne"] = pivot_table1[biom].sum(axis=1)
+
+
+    df_tmp = pivot_table1.copy()
+    biom.append("somme_ligne")
+    for i, status in enumerate(pivot_table1[variable]):
+        for i, bio in enumerate(biom):
+            df_tmp[bio] = pivot_table1[bio]#/pivot_table["somme_ligne"]*100
+
+    pivot_table1 = df_tmp[[variable, 'ROS1', 'ALK', 'EXON', 'EGFR', 'KRAS', 'NTRK', 'BRAF', 'MET', 'RET', 'HER2', 'somme_ligne']]
+    pivot_table1.index = pivot_table1[variable]
+    pivot_table1 = pivot_table1.drop(columns = [variable])
+    pivot_table1.loc['Column_Total']= pivot_table1.sum(numeric_only=True, axis=0)
+    pivot_table1 = pivot_table1.fillna(0)
+    
+    list_status = []
+    pivot_table1 = pivot_table1.reset_index()
+    #col = biom.append("User_status")
+    #dft = pd.DataFrame(columns = [biom])
+    dict_score = {}
+    
+    biom = ['ROS1', 'ALK', 'EXON', 'EGFR', 'KRAS', 'NTRK', 'BRAF', 'MET', 'RET', 'HER2']
+    
+    
+    for bio in biom:
+        list_score = []
+        for i, x in enumerate(pivot_table1[bio]):
+            n = pivot_table1["somme_ligne"].iloc[i]
+            m = pivot_table1[bio].iloc[-1]
+            total = pivot_table1["somme_ligne"].iloc[-1]
+            a = x
+            b = n-x
+            c= m-x
+            d = (total-n)-(c)
+            numerateur = (a*d)-(b*c)
+            denominateur = np.sqrt(n*m*(total-n)*(total-m))
+            np.seterr(divide='ignore', invalid='ignore')
+            phi_score = np.divide(numerateur, denominateur)
+            #phi_score2 = ((a)) / np.sqrt(n*m)
+            chi_square_value = total*np.square(phi_score)
+            normalised_score = x/(n*m)
+
+            #if chi_square_value > 6.6349:
+            list_score.append(phi_score)
+            #else:
+            #    list_score.append(np.nan)
+
+            dict_score[bio] = list_score
+
+    
+    for x in pivot_table1["User_status"]:
+        list_status.append(x)
+        dict_score["User_status"] = list_status
+    
+    dft = pd.DataFrame(dict_score)
+    dft.index = dft ["User_status"]
+    #dft = dft.drop(columns=["User_status"])
+    dft = dft.drop(labels=["Column_Total"])
+    dft["Year"] = annee
+    
+    if a ==0:
+        dft1 = dft.copy()
+    else:
+        dft1= pd.concat([dft1, dft], axis = 0)
+
+
+role_variable = "User_status"
+
+
+
+fig1 = make_subplots(rows=1, cols=1,
+                    shared_xaxes=True,
+                    vertical_spacing=0.02)
+
+#for j, v in enumerate(variable):
+for z, col in enumerate(dft1.columns[0:9]):
+    for i, n in enumerate(dft1[role_variable].unique()):
+        fig1.append_trace(
+        go.Scatter(
+            x= dft1["Year"].loc[(dft1[role_variable]==n)],
+            y= dft1[col].loc[(dft1[role_variable]== n)],
+            name = n,
+            meta= [col]),
+        1,1)
+
+#
+Ld=len(fig1.data)
+Lc =len(dft1.columns[0:9])
+
+
+
+#print(fig)
+for k in range(0, Ld):
+    #print(fig.data[k].meta[0])
+    #print(role_variable)
+
+    if "ROS1" in fig1.data[k].meta[0]:
+        fig1.update_traces(visible=True, selector = k)
+    else:
+        fig1.update_traces(visible=False, selector = k)
+
+
+
+def create_layout_button(k, customer):
+
+    list_to_display = []
+
+    for i, trace in enumerate(fig1.data):
+        #print(fig.data[i].meta[1])
+        if customer == fig1.data[i].meta[0] :
+            list_to_display.append(True)
+        else:
+            list_to_display.append(False)
+    return dict(label = customer,
+                method = 'update',
+                args = [{'visible': list_to_display,
+                         'title': customer,
+                         'showlegend': True}])
+
+
+
+fig1.update_layout(
+    title= f'Evolution du nombre de comptes et de tweets',
+    updatemenus=[
+        go.layout.Updatemenu(
+            active = 0,
+            buttons = [create_layout_button(k, customer) for k, customer in enumerate(dft1.columns[0:9])],
+            x= 1.2,
+            y= 1.8
+        ),
+
+    ]
+)
+
+
+#print(fig.layout.updatemenus)
+
+
+
+
+fig1.show()
+
+    
+
+
+# In[ ]:
+
+
+
+
