@@ -565,13 +565,13 @@ for n, x in enumerate(biom) :
             df_tmp.to_excel(writer, sheet_name=x)
 
 
-# In[25]:
+# In[23]:
 
 
 df=df0.merge(users,on=['user_id'], how = "left")#how = inner by default
 
 
-# In[27]:
+# In[25]:
 
 
 df["sum_of_5"] = df["ALK"] + df["EXON"] + df["EGFR"] + df["KRAS"] + df["ROS1"]

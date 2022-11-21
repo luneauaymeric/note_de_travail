@@ -81,21 +81,18 @@ roles = ['advocacy', 'cancer patient', 'collective',
 
 
 df1 = df0.groupby("user_id").agg(nb = ("user_screen_name", "size"))
-df1
 
 
 # In[9]:
 
 
 df1 = df0.groupby(["user_id", "user_screen_name"]).agg(nb = ("id", "size")).reset_index()
-df1
 
 
 # In[10]:
 
 
 users2 = users.merge(df1, on = ["user_id"], how = "left")
-len(users2)
 
 
 # In[11]:
