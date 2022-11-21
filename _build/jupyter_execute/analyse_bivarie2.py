@@ -89,6 +89,34 @@ df=df0.merge(users,on=['user_id'], how = "inner")#how = inner by default
 df = df.loc[(df["User_status"] != "Other") & (df["User_status"] != "Undefined") & (df["Year"] >= 2012)]
 
 
+# In[9]:
+
+
+len(df0)
+
+
+# In[10]:
+
+
+df1 = df0[['query', 'id', 'timestamp_utc', 'local_time',
+           'user_screen_name', 'text',  'user_location',  'user_id', 'user_name',
+           'ROS1', 'ALK', 'EXON', 'EGFR', 'KRAS', 'NTRK',
+           'BRAF', 'MET', 'RET', 'HER2', 'date', "nb_of_biomarker"]]
+
+
+# In[20]:
+
+
+df1_user = df1.groupby(["user_id"]).agg(sum_of_biomarker=("nb_of_biomarker", "sum"))
+
+
+# In[23]:
+
+
+df2_user= users.merge(df1_user,on=['user_id'], how = "left")#how = inner by default
+len(df2_user)
+
+
 # # Le rôle des différents groupes dans la publicisation des biomarqueurs
 # 
 # Les graphiques ci-dessous visent à compléter les analyses présentées dans les pages précédentes en ajoutant une dimension temporelle aux relations entre catégories d'acteurs et biomarqueurs. Il s'agit de cette manière de saisir le rôle de ces différents acteurs dans la diffusion de chacun des biomarqueurs à travers le nombre de tweets qu'ils publient.

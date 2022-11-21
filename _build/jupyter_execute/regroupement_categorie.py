@@ -80,6 +80,27 @@ roles = ['advocacy', 'cancer patient', 'collective',
 # In[8]:
 
 
+df1 = df0.groupby("user_id").agg(nb = ("user_screen_name", "size"))
+df1
+
+
+# In[9]:
+
+
+df1 = df0.groupby(["user_id", "user_screen_name"]).agg(nb = ("id", "size")).reset_index()
+df1
+
+
+# In[10]:
+
+
+users2 = users.merge(df1, on = ["user_id"], how = "left")
+len(users2)
+
+
+# In[11]:
+
+
 for r in roles:
     try:
         users[users.loc[users[r]>1]]=1
@@ -88,7 +109,7 @@ for r in roles:
         pass
 
 
-# In[9]:
+# In[12]:
 
 
 def binarize(x):
@@ -125,7 +146,7 @@ for r in roles:
 # Par *type d'entité*, on distingue les utlisatrices et utilisateurs qui agissent en leur "nom propre" de celles et ceux qui twittent au nom d'une organisation. Cette information est donnée par la variable *collective*.
 # 
 
-# In[10]:
+# In[13]:
 
 
 # Type
@@ -134,14 +155,14 @@ users.loc[users["collective"] > 0, "User_type"] = "Collective"
 
 
 
-# In[11]:
+# In[14]:
 
 
 entity = users[["user_id", "User_type"]]
 df_e=df0.merge(entity,on=['user_id'], how = "inner")#how = inner by default
 
 
-# In[12]:
+# In[15]:
 
 
 
@@ -164,7 +185,7 @@ tu_entity_style
 # 
 # 
 
-# In[13]:
+# In[16]:
 
 
 #Réattribution manuelle du genre aux deux comptes ayant été classé à la fois comme male et female
@@ -174,7 +195,7 @@ users.loc[users["user_scree"] == "chano_py", "male"] = 1
 users.loc[users["user_scree"] == "chano_py", "female"] = 0
 
 
-# In[14]:
+# In[17]:
 
 
 # Gender
@@ -187,14 +208,14 @@ users.loc[(users["User_type"] == "Person") & ((users["male"] == 0) &  (users["fe
 users.loc[(users["User_type"] == "Collective"), "Gender"] = np.nan
 
 
-# In[15]:
+# In[18]:
 
 
 gender = users[["user_id", "Gender"]]
 df_g=df0.merge(gender,on=['user_id'], how = "inner")#how = inner by default
 
 
-# In[16]:
+# In[19]:
 
 
 u_gender = gender.groupby(["Gender"]).agg(account_frequency =('user_id', 'count'))
@@ -241,7 +262,7 @@ fig.suptitle('Nombre de comptes et de tweets par catégorie de genre')
 # Les liens entre les rôles
 # ```
 
-# In[17]:
+# In[20]:
 
 
 roles = ['advocacy', 'cancer patient', 'health center', 'health professional', 'industry',
@@ -250,7 +271,7 @@ roles = ['advocacy', 'cancer patient', 'health center', 'health professional', '
 users["Somme_role"] = users[roles].sum(axis = 1)
 
 
-# In[18]:
+# In[21]:
 
 
 ## Unique role
@@ -590,14 +611,14 @@ users.loc[(users["Somme_role"] == 4) &
           (users["npo"] == 1)),  "User_role"]= "Survivor & cancer patient & advocacy & npo"
 
 
-# In[19]:
+# In[22]:
 
 
 role = users[["user_id", "User_type", "User_role"]]
 df_r=df0.merge(role,on=['user_id'], how = "inner")#how = inner by default
 
 
-# In[20]:
+# In[23]:
 
 
 u_role = role.groupby(["User_role"]).agg(Accounts =('user_id', 'count'))
@@ -620,7 +641,7 @@ tu_role_style
 # Les modalités de la variable *User_role* sont regroupées à l'aide d'une nouvelle variable appelée *User_role2*. Il s'agit ici d'opérer une première réduction des rôles. J'ai fait par exemple le choix de regrouper toutes les modalités contenant le terme "survivor" dans une méta-catégorie appelée *Survivor* (avec S majuscule). De même toutes les modalités contenant le terme "cancer patient" dans la méta-catégorie *Cancer patient*, sauf celles contenant aussi le terme "survivor". 
 # 
 
-# In[21]:
+# In[24]:
 
 
 users["User_role2"] = users["User_role"]
@@ -737,14 +758,14 @@ users.loc[(users['User_type'].isin(['Collective'])) &
           ((users['User_role'].str.contains('professional', case = False))), "User_role2"] = "Health professional"
 
 
-# In[22]:
+# In[25]:
 
 
 role = users[["user_id", "User_type", "User_role2"]]
 df_r=df0.merge(role,on=['user_id'], how = "inner")#how = inner by default
 
 
-# In[23]:
+# In[26]:
 
 
 u_role = role.groupby(["User_role2"]).agg(Accounts =('user_id', 'count'))
@@ -766,7 +787,7 @@ tu_role_style
 # 
 # Partant de la variable *User_role2*, on en a créé une nouvelle intitulée "User_role3" qui distingue pour chacun des rôles les comptes engagés dans la défence d'une cause et ceux qui ne le sont pas. On a ainsi les modalités *Cance patient* et *Advocacy cancer patient*.
 
-# In[24]:
+# In[27]:
 
 
 ## Advocacy
@@ -785,14 +806,14 @@ users.loc[#(users['User_type'].isin(['Person'])) &
          users['advocacy']== 0, "User_role3"] = users["User_role2"]
 
 
-# In[25]:
+# In[28]:
 
 
 role = users[["user_id", "User_type", "User_role3"]]
 df_r=df0.merge(role,on=['user_id'], how = "inner")#how = inner by default
 
 
-# In[26]:
+# In[29]:
 
 
 u_role = role.groupby(["User_role3"]).agg(Accounts =('user_id', 'count'))
@@ -822,7 +843,7 @@ tu_role_style
 # ```
 # 
 
-# In[27]:
+# In[30]:
 
 
 users["User_status"] = users["User_role3"]
@@ -837,10 +858,17 @@ users.loc[(users['User_role3'].str.contains('advocacy', case = False)), "User_st
 users.loc[((users["User_role3"] == "Advocacy Cancer patient") | 
           (users["User_role3"] == "Advocacy Survivor")), "User_status" ]= "Advocacy Patients"
 
+
 users.loc[(users["User_role3"] == "Advocacy Health professional"), "User_status" ]= "Health professional"
 
 
-# In[28]:
+users.loc[(users["user_scree"].isin(["ros1cancer", "gyncsm", "myelomacrowd", "thebreastofus",
+                                     "BestBreastNews"])), "User_status" ]= "Advocacy Patients"
+
+users.loc[(users["user_scree"]=="Consano"), "User_status" ]= "Health center"
+
+
+# In[31]:
 
 
 
@@ -849,14 +877,14 @@ fig = px.treemap(users, path=['User_type', 'User_status', 'User_role3', 'User_ro
 fig
 
 
-# In[29]:
+# In[32]:
 
 
 role = users[["user_id", "User_type", "User_status", "User_role"]]
 df_r=df0.merge(role,on=['user_id'], how = "inner")#how = inner by default
 
 
-# In[30]:
+# In[33]:
 
 
 u_role = role.groupby(["User_status", "User_role"]).agg(Accounts =('user_id', 'count'))
@@ -879,7 +907,7 @@ tu_role_style
 #role_tree.to_csv(f"{path_base}list_role.csv", sep = ",")
 
 
-# In[31]:
+# In[34]:
 
 
 u_role = role.groupby(["User_status"]).agg(Accounts =('user_id', 'count'))
@@ -902,7 +930,7 @@ tu_role_style
 
 # Dans le deuxième regroupement, qui correspond à la variable *User_status2*, la modalité *Advocacy* rassemble tous les comptes considérés comme jouant un rôle d'advocacy, sauf si ce sont des patients. Dans le cas des patients, on conserve la distinction entre *Patients* et *Advocacy patients*.
 
-# In[32]:
+# In[35]:
 
 
 users["User_status2"] = users["User_role3"]
@@ -916,8 +944,13 @@ users.loc[(users['User_role3'].str.contains('advocacy', case = False)), "User_st
 users.loc[((users["User_role3"] == "Advocacy Cancer patient") | 
           (users["User_role3"] == "Advocacy Survivor")), "User_status2" ]= "Advocacy Patients"
 
+users.loc[(users["user_scree"].isin(["ros1cancer", "gyncsm", "myelomacrowd", "thebreastofus",
+                                     "BestBreastNews"])), "User_status2" ]= "Advocacy Patients"
 
-# In[33]:
+users.loc[(users["user_scree"]=="Consano"), "User_status2" ]= "Health center"
+
+
+# In[36]:
 
 
 
@@ -926,14 +959,14 @@ fig = px.treemap(users, path=['User_type', 'User_status2', 'User_role3', 'User_r
 fig
 
 
-# In[34]:
+# In[37]:
 
 
 role = users[["user_id", "User_type", "User_status2"]]
 df_r=df0.merge(role,on=['user_id'], how = "inner")#how = inner by default
 
 
-# In[35]:
+# In[38]:
 
 
 u_role = role.groupby(["User_status2"]).agg(Accounts =('user_id', 'count'))
@@ -958,7 +991,7 @@ tu_role_style
 # 
 # 
 
-# In[36]:
+# In[39]:
 
 
 users["User_status3"] = users["User_role3"]
@@ -974,8 +1007,13 @@ users.loc[(users['User_role3'].str.contains('advocacy', case = False)) &
 users.loc[((users["User_role3"] == "Advocacy Cancer patient") | 
           (users["User_role3"] == "Advocacy Survivor")), "User_status3" ]= "Advocacy Patients"
 
+users.loc[(users["user_scree"].isin(["ros1cancer", "gyncsm", "myelomacrowd", "thebreastofus",
+                                     "BestBreastNews"])), "User_status3" ]= "Advocacy Patients"
 
-# In[37]:
+users.loc[(users["user_scree"]=="Consano"), "User_status3" ]= "Health center"
+
+
+# In[40]:
 
 
 
@@ -984,14 +1022,14 @@ fig = px.treemap(users, path=['User_type', 'User_status3', 'User_role3', 'User_r
 fig
 
 
-# In[38]:
+# In[41]:
 
 
 role = users[["user_id", "User_type", "User_status3"]]
 df_r=df0.merge(role,on=['user_id'], how = "inner")#how = inner by default
 
 
-# In[39]:
+# In[42]:
 
 
 u_role = role.groupby(["User_status3"]).agg(Accounts =('user_id', 'count'))
@@ -1012,7 +1050,7 @@ tu_role_style
 #role_tree.to_csv(f"{path_base}list_role.csv", sep = ",")
 
 
-# In[40]:
+# In[43]:
 
 
 users.columns
@@ -1028,14 +1066,8 @@ users = users[['user_creat', 'user_descr', 'user_follo',
                "User_status", "User_status2", "User_status3"]]
 
 
-# In[41]:
+# In[44]:
 
 
-#users.to_csv(f'{path_base}recoded_user_sm_predicted.csv',sep =",")
-
-
-# In[ ]:
-
-
-
+users.to_csv(f'{path_base}recoded_user_sm_predicted.csv',sep =",")
 

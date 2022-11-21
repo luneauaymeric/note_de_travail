@@ -69,8 +69,9 @@ users = pd.read_csv(f'{path_base}recoded_user_sm_predicted.csv',dtype=dic_id)
 # In[6]:
 
 
-df0 = df0[['query', 'id', 'timestamp_utc', 'local_time',
-           'user_screen_name', 'text',  'user_location',  'user_id', 'user_name',
+df0 = df0[['query', 'id', 'timestamp_utc', 'local_time', 'to_username', 'to_userid','to_tweetid',
+           'user_screen_name', 'text',  'user_location',  'user_id', 'user_name','links', 'domains', 
+           'media_urls','media_files', 'media_types', 'mentioned_names', 'mentioned_ids', 'hashtags',
            'ROS1', 'ALK', 'EXON', 'EGFR', 'KRAS', 'NTRK',
            'BRAF', 'MET', 'RET', 'HER2', 'date']]
 
@@ -375,12 +376,6 @@ res.set(title ="Corrélation entre biomarqueurs et statuts (coefficient de Phi)"
 # In[21]:
 
 
-
-
-
-# In[21]:
-
-
 df=df0.merge(users,on=['user_id'], how = "inner")#how = inner by default
 df = df.loc[(df["User_status"] != "Other") & (df["User_status"] != "Undefined") & (df["Year"] >= 2012)]
 df = df.sort_values("Year")
@@ -545,6 +540,44 @@ fig1.update_layout(
 fig1.show()
 
     
+
+
+# In[22]:
+
+
+biom = ['ALK', 'EXON', 'EGFR', 'KRAS', 'ROS1']
+users0 = users[['user_scree', 'User_status']].rename(columns={"user_scree": "to_username", "User_status": "to_userstatus"})
+
+for n, x in enumerate(biom) :
+    df_tmp = df.loc[df[x] == 1].drop_duplicates(subset=["user_screen_name", "text"])
+    df_tmp = df_tmp[['id', 'user_screen_name', 'text', x,
+                      'date', 'Year', 'User_type', 'Gender', 'User_status', 'to_username',
+       'to_tweetid']].sort_values(["date", "User_status"]).merge(users0, on = ["to_username"], how ="left")
+    
+    
+    
+    
+    if n == 0:
+        with pd.ExcelWriter(f"{path_base}content_of_tweets.xlsx",mode='w') as writer:  
+            df_tmp.to_excel(writer, sheet_name=x)
+    else:
+        with pd.ExcelWriter(f"{path_base}content_of_tweets.xlsx",mode='a') as writer:  
+            df_tmp.to_excel(writer, sheet_name=x)
+
+
+# In[25]:
+
+
+df=df0.merge(users,on=['user_id'], how = "left")#how = inner by default
+
+
+# In[27]:
+
+
+df["sum_of_5"] = df["ALK"] + df["EXON"] + df["EGFR"] + df["KRAS"] + df["ROS1"]
+df.loc[df["sum_of_5"]>0, "cited_one_of_5"] = True
+df.loc[df["sum_of_5"]==0, "cited_one_of_5"] = False
+#df.to_csv(f"{path_base}verified_corpus_with_users_features.csv", sep = ",")
 
 
 # In[ ]:

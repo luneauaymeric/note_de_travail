@@ -10,5 +10,6 @@ chapters:
 - file: incidence_matrix
 - file: analyse_bivarie2
 - file: dynamic_network
+- file: analyse_hashtags
 - file: glossary
 - file: genindex
