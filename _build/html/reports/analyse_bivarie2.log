@@ -25,7 +25,7 @@ df1 = df0[['query', 'id', 'timestamp_utc', 'local_time',
 
 [0;31m---------------------------------------------------------------------------[0m
 [0;31mKeyError[0m                                  Traceback (most recent call last)
-[0;32m/tmp/ipykernel_5021/2417038728.py[0m in [0;36m<module>[0;34m[0m
+[0;32m/tmp/ipykernel_6750/2417038728.py[0m in [0;36m<module>[0;34m[0m
 [0;32m----> 1[0;31m df1 = df0[['query', 'id', 'timestamp_utc', 'local_time',
 [0m[1;32m      2[0m            [0;34m'user_screen_name'[0m[0;34m,[0m [0;34m'text'[0m[0;34m,[0m  [0;34m'user_location'[0m[0;34m,[0m  [0;34m'user_id'[0m[0;34m,[0m [0;34m'user_name'[0m[0;34m,[0m[0;34m[0m[0;34m[0m[0m
 [1;32m      3[0m            [0;34m'ROS1'[0m[0;34m,[0m [0;34m'ALK'[0m[0;34m,[0m [0;34m'EXON'[0m[0;34m,[0m [0;34m'EGFR'[0m[0;34m,[0m [0;34m'KRAS'[0m[0;34m,[0m [0;34m'NTRK'[0m[0;34m,[0m[0;34m[0m[0;34m[0m[0m
