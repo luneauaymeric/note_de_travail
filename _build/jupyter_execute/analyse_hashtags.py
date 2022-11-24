@@ -316,25 +316,25 @@ fig
 list_of_hashtag = ['adcsm', 'amsm', 'ancsm', 'ayacsm', 'bcsm', 'blcsm', 'btsm', 'crcsm', 'esocsm', 'gencsm', 'gyncsm', 'hncsm', 'hpbcsm', 'kcsm', 'lcsm', 'leusm', 'lymsm', 'melsm', 'mmsm', 'mpnsm', 'pancsm', 'pedcsm', 'pcsm', 'scmsm', 'skcsm', 'stcsm', 'thmcsm', 'thycsm', 'tscsm']
 
 
-# In[53]:
+# In[29]:
 
 
 df0["nb_of_bio"] = df0["ALK"]+df0["ROS1"]+df0["EXON"]+df0["EGFR"]+df0["KRAS"]+df0["NTRK"]+df0["BRAF"]+df0["MET"]+df0["RET"]+df0["HER2"]
 
 
-# In[54]:
+# In[30]:
 
 
 df1 = df0.loc[(df0["nb_of_bio"]>0)]
 
 
-# In[55]:
+# In[31]:
 
 
 df_h1 = df1.loc[(df1["hashtags"].str.contains(list_of_hashtag1, regex=True)) &(~df1["User_status"].isnull())]
 
 
-# In[56]:
+# In[32]:
 
 
 df_h2 = df_h1[["id", "user_id", "user_screen_name","User_status", "hashtags"]]
@@ -344,13 +344,13 @@ for h in list_of_hashtag:
     
 
 
-# In[57]:
+# In[33]:
 
 
 df_h_status = df_h2[["User_status"]].drop_duplicates()
 
 
-# In[58]:
+# In[34]:
 
 
 
@@ -362,7 +362,7 @@ for h in list_of_hashtag:
     
 
 
-# In[59]:
+# In[35]:
 
 
 dict_hashtag = {"hashtag" : list_h, "count_h": list_count_h}
@@ -372,7 +372,7 @@ count_h["log_h"] = np.log(count_h["count_h"])
 count_h = count_h.sort_values('freq_h', ascending = False)
 
 
-# In[60]:
+# In[36]:
 
 
 fig = px.bar(count_h, x='count_h', y='hashtag',
@@ -572,4 +572,187 @@ fig = px.imshow(dft, color_continuous_scale='RdBu_r',
                title = "Corrélation entre hashtags et statuts (coefficient de Phi)" )
 fig.update_xaxes(side="top")
 fig
+
+
+# ## Liens entre hashtags et biomarqueurs
+
+# In[53]:
+
+
+tags_by_id= pd.read_csv(f"{path_base}hashtag_by_id.csv", sep = ",", dtype = dic_id)
+
+
+# In[54]:
+
+
+tags_by_id = tags_by_id.loc[tags_by_id["hashtag"].isin(list_of_hashtag)]
+df2 = df0.loc[df0["nb_of_bio"]>0]
+df_biom = df2[["id", "ALK","ROS1", "EXON", "EGFR", "KRAS", "NTRK", "BRAF", "MET", "RET", "HER2"]]
+df_hb = tags_by_id.merge(df_biom, on = ["id"], how ="left")
+
+
+# In[55]:
+
+
+list_of_bio = ["ALK","ROS1", "EXON", "EGFR", "KRAS", "NTRK", "BRAF", "MET", "RET", "HER2"]
+
+
+# In[56]:
+
+
+list_h = []
+list_count_h = []
+for i, b in enumerate(list_of_bio):
+    if i== 0:
+        stat_count_b = df_hb.groupby(["hashtag"]).agg(count_bio=(b,"sum")).reset_index()
+        stat_count_b["bio"] = b
+        stat_count_b["total_b"] = np.sum(stat_count_b["count_bio"])
+        stat_count_b["freq_b"] = (stat_count_b["count_bio"]/np.sum(stat_count_b["count_bio"]))*100
+    else:
+        size_b = df_hb.groupby(["hashtag"]).agg(count_bio=(b,"sum")).reset_index()
+        size_b["bio"] = b
+        size_b["total_b"] = np.sum(size_b["count_bio"])
+        size_b["freq_b"] = (size_b["count_bio"]/np.sum(size_b["count_bio"]))*100
+        stat_count_b = pd.concat([stat_count_b, size_b])
+        
+
+
+# In[57]:
+
+
+b_count_stat = stat_count_b.groupby(["hashtag"]).agg(total_stat=('count_bio',"sum")).reset_index()
+
+
+# In[58]:
+
+
+stat_count_b = stat_count_b.merge(b_count_stat, on = ["hashtag"], how = "left").reset_index()
+stat_count_b["freq_stat"] = (stat_count_b["count_bio"]/stat_count_b["total_stat"])*100
+
+
+# In[59]:
+
+
+
+pivot_table = stat_count_b[["hashtag", "bio", "freq_b"]]
+pivot_table = pivot_table.pivot(index='bio', columns='hashtag', values='freq_b').reset_index()
+pivot_table.index =  pivot_table["bio"]
+pivot_table = pivot_table.drop(columns= ["bio"])
+
+
+# In[60]:
+
+
+fig = px.imshow(pivot_table, color_continuous_scale='Reds', 
+               title = "Part des hashtags dans les tweets citant chacun des biomarqueur (% en ligne)" )
+fig.update_xaxes(side="top")
+fig
+
+
+# In[61]:
+
+
+pivot_table2 = stat_count_b[["bio", "hashtag", "freq_stat"]]
+pivot_table2 = pivot_table2.pivot(index='bio', columns='hashtag', values='freq_stat').reset_index()
+pivot_table2.index =  pivot_table2["bio"]
+pivot_table2 = pivot_table2.drop(columns= ["bio"])
+
+
+# In[62]:
+
+
+fig = px.imshow(pivot_table2, color_continuous_scale='Blues', 
+               title = "Part des biomarqueurs dans les tweets mentionnant chacun des hashtags (% en colonne)" )
+fig.update_xaxes(side="top")
+fig
+
+
+# In[63]:
+
+
+pivot_table3 = stat_count_b[["bio", "hashtag", "count_bio"]]
+pivot_table3 = pivot_table3.pivot(index='bio', columns='hashtag', values='count_bio').reset_index()
+pivot_table3.index =  pivot_table3["bio"]
+pivot_table3 = pivot_table3.drop(columns= ["bio"])
+
+
+# In[64]:
+
+
+fig = px.imshow(pivot_table3, color_continuous_scale='Blues', width = 800, height = 700,
+                title='Nombre de citations de chacun des hashtags dans les tweets mentionnant chacun des biomarqueurs')
+fig.update_xaxes(side="top")
+fig
+
+
+# In[65]:
+
+
+pivot_table3['somme_ligne']= pivot_table3.sum(numeric_only=True, axis=1)
+pivot_table3.loc['Column_total']= pivot_table3.sum(numeric_only=True, axis=0)
+pivot_table3 =pivot_table3.reset_index()
+
+
+# In[66]:
+
+
+list_status = []
+#col = biom.append("User_status")
+#dft = pd.DataFrame(columns = [biom])
+dict_score = {}
+
+for h in list_of_hashtag:
+    list_score = []
+    for i, x in enumerate(pivot_table3[h]):
+        n = pivot_table3["somme_ligne"].iloc[i] #total tweets of the status with hashtags
+        m = pivot_table3[h].iloc[-1] #total tweets mentionning the hashtag h
+        total = pivot_table3["somme_ligne"].iloc[-1] # total of tweets mentionning an hashtag
+        a = x
+        b = n-x
+        c= m-x
+        d = (total-n)-(c)
+        numerateur = (a*d)-(b*c)
+        denominateur_a = n*m
+        denominateur_b = (total-n)*(total-m)
+        denominateur_c = np.sqrt(denominateur_a)*np.sqrt(denominateur_b)
+        denominateur = denominateur_c
+        np.seterr(divide='ignore', invalid='ignore')
+        phi_score = np.divide(numerateur, denominateur)
+        #phi_score2 = ((a)) / np.sqrt(n*m)
+        chi_square_value = total*np.square(phi_score)
+        normalised_score = x/(n*m)
+
+        if chi_square_value > 6.6349:
+            list_score.append(phi_score)
+        else:
+            list_score.append(np.nan)
+        dict_score[h] = list_score
+
+for x in pivot_table3["bio"]:
+        list_status.append(x)
+        dict_score["bio"] = list_status
+
+
+# In[67]:
+
+
+dft = pd.DataFrame(dict_score)
+dft.index = dft["bio"]
+dft = dft.drop(columns=["bio"])
+dft = dft.drop(labels=["Column_total"])
+
+
+# In[68]:
+
+
+fig = px.imshow(dft, color_continuous_scale='RdBu_r', width = 800, height = 700,
+                title='Corrélation entre hashtag et biomarqueurs (coefficient de Phi)')
+fig.update_xaxes(side="top")
+fig
+
+
+# In[ ]:
+
+
+
 

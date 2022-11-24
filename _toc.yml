@@ -11,5 +11,6 @@ chapters:
 - file: analyse_bivarie2
 - file: dynamic_network
 - file: analyse_hashtags
+- file: term_term_analysis
 - file: glossary
 - file: genindex
